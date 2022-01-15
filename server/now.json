@@ -1,0 +1,80 @@
+{
+  "name": "conflicto-social-server",
+  "version": 2,
+  "env": {
+    "MONGODB_URI": "@mongodb-conflicto-social",
+    "AUTH_JWT_SECRET": "@auth-jwt-secret"
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/200.ts",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["OPTIONS"]
+    },
+    {
+      "src": "/api/socialConflicts/(add|detail|edit|list|remove)",
+      "dest": "/api/socialConflicts",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["POST"]
+    },
+    {
+      "src": "/api/categories/(add|detail|edit|list)",
+      "dest": "/api/categories",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["POST"]
+    },
+    {
+      "src": "/api/unions/(add|detail|edit|list)",
+      "dest": "/api/unions",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["POST"]
+    },
+    {
+      "src": "/api/users/(add|detail|edit|list)",
+      "dest": "/api/users",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["POST"]
+    },
+    {
+      "src": "/api/articles/(getLatest|getFeatured|getDetails)",
+      "dest": "/api/articles",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["POST"]
+    },
+    {
+      "src": "/api/export/actions",
+      "dest": "/api/export",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["POST"]
+    }
+  ]
+}
