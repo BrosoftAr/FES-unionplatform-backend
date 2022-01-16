@@ -41,7 +41,7 @@ const AdminCategoriesDetail: React.FunctionComponent<RouteComponentProps<
       form.resetFields();
       message.success(isEditing ? "Sector actualizado" : "Sector guardado");
 
-      history.push(URLS.ADMIN_CATEGORIES);
+      // history.push(URLS.ADMIN_CATEGORIES);
     } catch (e) {
       message.error(JSON.stringify(e));
     } finally {

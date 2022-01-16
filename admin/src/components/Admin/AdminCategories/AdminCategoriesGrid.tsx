@@ -12,11 +12,11 @@ const AdminCategoriesGrid = () => {
     <Card
       title="Sectores"
       extra={
-        <Link to={URLS.ADMIN_CATEGORIES_NEW}>
+        // <Link to={URLS.ADMIN_CATEGORIES_NEW}>
           <Button icon={<PlusCircleOutlined />} type="primary">
             Agregar Sector
           </Button>
-        </Link>
+        // </Link>
       }
     >
       <Table
@@ -37,9 +37,9 @@ const AdminCategoriesGrid = () => {
               return (
                 <>
                   <Tooltip title="Editar">
-                    <Link
+                    {/* <Link
                       to={URLS.ADMIN_CATEGORIES_EDIT.replace(
-                        ":_id",
+                        ":_id", 
                         categoryId
                       )}
                     >
@@ -48,7 +48,7 @@ const AdminCategoriesGrid = () => {
                         size="small"
                         icon={<EditOutlined />}
                       />
-                    </Link>
+                    </Link> */}
                   </Tooltip>
                 </>
               );

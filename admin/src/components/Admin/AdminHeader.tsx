@@ -19,7 +19,7 @@ const AdminHeader = () => {
           <Link to={URLS.ADMIN_CONFLICTS}>Conflictos</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to={URLS.ADMIN_CATEGORIES}>Sectores</Link>
+          <Link to={URLS.ADMIN_NEWS}>Noticias</Link>
         </Menu.Item>
         {/* <Menu.Item>
           <Link to={URLS.ADMIN_UNIONS}>Sindicatos</Link>

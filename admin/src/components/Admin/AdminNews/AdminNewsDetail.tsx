@@ -5,21 +5,24 @@ import FetchService from "../../../shared/fetchService";
 import ApiEndpoints from "../../../shared/ApiEndpoints";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import URLS from "../../../shared/urls";
-import { Union } from "../../../shared/Union";
+import { News } from "../../../shared/News";
 
-interface UnionFormValues {
+interface NewsFormValues {
   title: string;
+  description: string;
+  thumbnail: string;
+  content: string;
 }
 
-interface AdminUnionsDetailRouteParams {
+interface AdminNewsDetailRouteParams {
   _id?: string;
 }
 
-const AdminUnionsDetail: React.FunctionComponent<RouteComponentProps<
-  AdminUnionsDetailRouteParams
+const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
+  AdminNewsDetailRouteParams
 >> = ({ match, history }) => {
   const isEditing = !!match.params && match.params._id;
-  const unionId = isEditing && match.params._id;
+  const newsId = isEditing && match.params._id;
 
   const [form] = Form.useForm();
 
@@ -27,23 +30,24 @@ const AdminUnionsDetail: React.FunctionComponent<RouteComponentProps<
   const saveForm = async (values: any) => {
     setIsSending(true);
     try {
-      const formValues: UnionFormValues = values;
+      const formValues: NewsFormValues = values;
 
       const endpoint = isEditing
-        ? ApiEndpoints.UNIONS_EDIT
-        : ApiEndpoints.UNIONS_ADD;
+        ? ApiEndpoints.NEWS_EDIT
+        : ApiEndpoints.NEWS_ADD;
+        
       await FetchService.request(endpoint, {
         body: JSON.stringify({
-          unionValues: formValues,
-          unionId,
+          newsValues: formValues,
+          newsId,
         }),
       });
       form.resetFields();
       message.success(
-        isEditing ? "Sindicato actualizado" : "Sindicato guardado"
+        isEditing ? "Noticia actualizada" : "Noticia guardada"
       );
 
-      history.push(URLS.ADMIN_UNIONS);
+      history.push(URLS.ADMIN_NEWS);
     } catch (e) {
       message.error(JSON.stringify(e));
     } finally {
@@ -51,39 +55,42 @@ const AdminUnionsDetail: React.FunctionComponent<RouteComponentProps<
     }
   };
 
-  const [union, setUnion] = useState<Union>();
-  const [isLoadingUnion, setIsLoadingUnion] = useState(true);
+  const [news, setNews] = useState<News>();
+  const [isLoadingNews, setIsLoadingNews] = useState(true);
 
   useEffect(() => {
-    const fetchUnion = async () => {
-      setIsLoadingUnion(true);
-      const { union } = await FetchService.request(ApiEndpoints.UNIONS_DETAIL, {
-        body: JSON.stringify({ unionId }),
+    const fetchNews = async () => {
+      setIsLoadingNews(true);
+      const { news } = await FetchService.request(ApiEndpoints.NEWS_DETAIL, {
+        body: JSON.stringify({ newsId }),
       });
-      setUnion(union);
-      setIsLoadingUnion(false);
+      setNews(news);
+      setIsLoadingNews(false);
     };
 
     if (isEditing) {
-      fetchUnion();
+      fetchNews();
     }
-  }, [isEditing, unionId]);
+  }, [isEditing, newsId]);
 
-  const isLoading = isEditing && isLoadingUnion;
+  const isLoading = isEditing && isLoadingNews;
 
   if (isLoading) {
     return <Spin />;
   }
 
-  let initialValues: UnionFormValues | undefined = undefined;
-  if (union && isEditing) {
+  let initialValues: NewsFormValues | undefined = undefined;
+  if (news && isEditing) {
     initialValues = {
-      title: union.title,
+      title: news.title,
+      content: news.content,
+      description: news.description,
+      thumbnail: news.thumbnail,
     };
   }
 
   return (
-    <Card title={<BackCardTitle title="Agregar sindicato" />}>
+    <Card title={<BackCardTitle title="Agregar noticia" />}>
       <Row>
         <Col span={16} offset={4}>
           <Form
@@ -96,6 +103,19 @@ const AdminUnionsDetail: React.FunctionComponent<RouteComponentProps<
             <Form.Item label="Título" name="title" rules={[{ required: true }]}>
               <Input autoFocus />
             </Form.Item>
+
+            <Form.Item label="Descripción corta" name="description" rules={[{ required: true }]}>
+              <Input autoFocus />
+            </Form.Item>
+            
+            <Form.Item label="URL de Imagen" name="thumbnail" rules={[{ required: true }]}>
+              <Input autoFocus />
+            </Form.Item>
+
+            <Form.Item label="Contenido" name="content" rules={[{ required: true }]}>
+              <Input.TextArea autoFocus />
+            </Form.Item>
+
 
             <div style={{ textAlign: "right" }}>
               <Button
@@ -113,4 +133,4 @@ const AdminUnionsDetail: React.FunctionComponent<RouteComponentProps<
     </Card>
   );
 };
-export default withRouter(AdminUnionsDetail);
+export default withRouter(AdminNewsDetail);

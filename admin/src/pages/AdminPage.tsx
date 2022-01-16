@@ -4,14 +4,10 @@ import { Layout } from "antd";
 import URLS from "../shared/urls";
 import AdminHomePage from "../components/Admin/AdminHomePage";
 import AdminHeader from "../components/Admin/AdminHeader";
-import AdminCategoriesGrid from "../components/Admin/AdminCategories/AdminCategoriesGrid";
-import AdminCategoriesDetail from "../components/Admin/AdminCategories/AdminCategoriesDetail";
 import AdminUsersGrid from "../components/Admin/AdminUsers/AdminUsersGrid";
 import AdminUsersDetail from "../components/Admin/AdminUsers/AdminUsersDetail";
-import AdminUnionsGrid from "../components/Admin/AdminUnions/AdminUnionsGrid";
-import AdminUnionsDetail from "../components/Admin/AdminUnions/AdminUnionsDetail";
-import AdminSocialConflictsGrid from "../components/Admin/AdminSocialConflicts/AdminSocialConflictsGrid";
-import AdminSocialConflictsDetail from "../components/Admin/AdminSocialConflicts/AdminSocialConflictsDetail";
+import AdminNewsGrid from "../components/Admin/AdminNews/AdminNewsGrid";
+import AdminNewsDetail from "../components/Admin/AdminNews/AdminNewsDetail";
 
 const AdminPage = () => (
   <Layout>
@@ -38,25 +34,9 @@ const AdminPage = () => (
             component={AdminUsersDetail}
           />
 
-          {/* SocialConflicts */}
-          <Route
-            exact
-            path={URLS.ADMIN_CONFLICTS}
-            component={AdminSocialConflictsGrid}
-          />
-          <Route
-            exact
-            path={URLS.ADMIN_CONFLICTS_NEW}
-            component={AdminSocialConflictsDetail}
-          />
-          <Route
-            exact
-            path={URLS.ADMIN_CONFLICTS_EDIT}
-            component={AdminSocialConflictsDetail}
-          />
 
           {/* Categories */}
-          <Route
+          {/* <Route
             exact
             path={URLS.ADMIN_CATEGORIES}
             component={AdminCategoriesGrid}
@@ -66,23 +46,23 @@ const AdminPage = () => (
             path={URLS.ADMIN_CATEGORIES_NEW}
             component={AdminCategoriesDetail}
           />
-          <Route
+          <Route 
             exact
             path={URLS.ADMIN_CATEGORIES_EDIT}
             component={AdminCategoriesDetail}
-          />
+          /> */}
 
-          {/* Unions */}
-          <Route exact path={URLS.ADMIN_UNIONS} component={AdminUnionsGrid} />
+          {/* News */}
+          <Route exact path={URLS.ADMIN_NEWS} component={AdminNewsGrid} />
           <Route
             exact
-            path={URLS.ADMIN_UNIONS_NEW}
-            component={AdminUnionsDetail}
+            path={URLS.ADMIN_NEWS_NEW}
+            component={AdminNewsDetail}
           />
           <Route
             exact
-            path={URLS.ADMIN_UNIONS_EDIT}
-            component={AdminUnionsDetail}
+            path={URLS.ADMIN_NEWS_EDIT}
+            component={AdminNewsDetail}
           />
         </Switch>
       </div>

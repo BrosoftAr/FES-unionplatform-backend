@@ -16,10 +16,10 @@ const ApiEndpoints = {
   USERS_DETAIL: "users/detail",
   USERS_ADD: "users/add",
   USERS_EDIT: "users/edit",
-  UNIONS_LIST: "unions/list",
-  UNIONS_DETAIL: "unions/detail",
-  UNIONS_ADD: "unions/add",
-  UNIONS_EDIT: "unions/edit",
-  EXPORT_ACTIONS: "export/actions",
+  NEWS_LIST: "news/list",
+  NEWS_DETAIL: "news/detail",
+  NEWS_ADD: "news/add",
+  NEWS_EDIT: "news/edit",
+  NEWS_REMOVE: "news/remove",
 };
 export default ApiEndpoints;

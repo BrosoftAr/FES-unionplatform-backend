@@ -27,8 +27,8 @@
       "methods": ["POST", "OPTIONS"]
     },
     {
-      "src": "/api/articles/(getLatest|getFeatured|getDetails)",
-      "dest": "/api/articles",
+      "src": "/api/news/(add|detail|edit|list|remove)",
+      "dest": "/api/news",
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
