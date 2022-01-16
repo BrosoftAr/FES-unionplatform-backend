@@ -1,6 +1,6 @@
 import { NowRequest, NowResponse } from "@now/node";
 import { ObjectId } from "mongodb";
-import { allowCors, onlyLoggedIn, checkParams } from "../imports/helpers";
+import { allowCors, onlyLoggedIn, checkParams, onlyLoggedInAdmin } from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
@@ -18,7 +18,29 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
       res.status(200).json({ incidents });
       return;
     }
+    // DETAIL
+    else if (requestedUrl === "/api/incidents/detail") {
+      const schema = {
+        type: "object",
+        required: ["incidentId"],
+        properties: {
+          incidentId: { type: "string" }
+        }
+      };
 
+      const { incidentId } = checkParams<any>(req.body, schema, res);
+
+      const incident = await IncidentsDb.findOne({
+        _id: new ObjectId(incidentId)
+      });
+
+      res
+        .status(200)
+        .json({ incident })
+        .end();
+    }
+
+    await onlyLoggedInAdmin({ req, res });
 
     // ADD
     if (requestedUrl === "/api/incidents/add") {
@@ -95,27 +117,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .json({ modifiedCount })
         .end();
     }
-    // DETAIL
-    else if (requestedUrl === "/api/incidents/detail") {
-      const schema = {
-        type: "object",
-        required: ["categoryId"],
-        properties: {
-          categoryId: { type: "string" }
-        }
-      };
-
-      const { categoryId } = checkParams<any>(req.body, schema, res);
-
-      const category = await IncidentsDb.findOne({
-        _id: new ObjectId(categoryId)
-      });
-
-      res
-        .status(200)
-        .json({ category })
-        .end();
-    }
+    
   } catch (e) {
     console.log(e);
   }
