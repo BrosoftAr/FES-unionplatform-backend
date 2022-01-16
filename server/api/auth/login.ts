@@ -18,9 +18,8 @@ const schema = {
   },
 };
 
-module.exports = async (req: NowRequest, res: NowResponse) => {
+module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    allowCors({ res });
     const { email, password } = checkParams<MethodParams>(
       req.body,
       schema,
@@ -62,4 +61,4 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
   } catch (e) {
     console.log(e);
   }
-};
+});
