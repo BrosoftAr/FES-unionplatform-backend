@@ -35,6 +35,16 @@
         "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
       },
       "methods": ["POST", "OPTIONS"]
+    },
+    {
+      "src": "/api/useful-info/(add|detail|edit|list|remove)",
+      "dest": "/api/useful-info",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["POST", "OPTIONS"]
     }
   ]
 }

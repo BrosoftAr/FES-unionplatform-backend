@@ -8,6 +8,8 @@ import AdminUsersGrid from "../components/Admin/AdminUsers/AdminUsersGrid";
 import AdminUsersDetail from "../components/Admin/AdminUsers/AdminUsersDetail";
 import AdminNewsGrid from "../components/Admin/AdminNews/AdminNewsGrid";
 import AdminNewsDetail from "../components/Admin/AdminNews/AdminNewsDetail";
+import AdminUsefulInfoGrid from "../components/Admin/AdminusefulInfo/AdminUsefulInfoGrid";
+import AdminUsefulInfoDetail from "../components/Admin/AdminusefulInfo/AdminUsefulInfoDetail";
 
 const AdminPage = () => (
   <Layout>
@@ -34,24 +36,6 @@ const AdminPage = () => (
             component={AdminUsersDetail}
           />
 
-
-          {/* Categories */}
-          {/* <Route
-            exact
-            path={URLS.ADMIN_CATEGORIES}
-            component={AdminCategoriesGrid}
-          />
-          <Route
-            exact
-            path={URLS.ADMIN_CATEGORIES_NEW}
-            component={AdminCategoriesDetail}
-          />
-          <Route 
-            exact
-            path={URLS.ADMIN_CATEGORIES_EDIT}
-            component={AdminCategoriesDetail}
-          /> */}
-
           {/* News */}
           <Route exact path={URLS.ADMIN_NEWS} component={AdminNewsGrid} />
           <Route
@@ -63,6 +47,20 @@ const AdminPage = () => (
             exact
             path={URLS.ADMIN_NEWS_EDIT}
             component={AdminNewsDetail}
+          />
+
+
+          {/* Useful Information */}
+          <Route exact path={URLS.ADMIN_USEFUL_INFO} component={AdminUsefulInfoGrid} />
+          <Route
+            exact
+            path={URLS.ADMIN_USEFUL_INFO_NEW}
+            component={AdminUsefulInfoDetail}
+          />
+          <Route
+            exact
+            path={URLS.ADMIN_USEFUL_INFO_EDIT}
+            component={AdminUsefulInfoDetail}
           />
         </Switch>
       </div>

@@ -8,96 +8,94 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
     const requestedUrl = req.url;
 
     const db = await getDatabaseConnection();
-    const NewsDb = await db.collection("news");
+    const UsefulInfoDb = await db.collection("useful-info");
 
     // LIST
-    if (requestedUrl === "/api/news/list") {
-      const news = await NewsDb.find({}).toArray();
-      res.status(200).json({ news });
+    if (requestedUrl === "/api/useful-info/list") {
+      const usefulInfo = await UsefulInfoDb.find({}).toArray();
+      res.status(200).json({ usefulInfo });
       return;
     }
     // DETAIL
-    else if (requestedUrl === "/api/news/detail") {
+    else if (requestedUrl === "/api/useful-info/detail") {
       const schema = {
         type: "object",
-        required: ["newsId"],
+        required: ["usefulInfoId"],
         properties: {
-          newsId: { type: "string" }
+          usefulInfoId: { type: "string" }
         }
       };
 
-      const { newsId } = checkParams<any>(req.body, schema, res);
+      const { usefulInfoId } = checkParams<any>(req.body, schema, res);
 
-      const news = await NewsDb.findOne({
-        _id: new ObjectId(newsId)
+      const usefulInfo = await UsefulInfoDb.findOne({
+        _id: new ObjectId(usefulInfoId)
       });
 
       res
         .status(200)
-        .json({ news })
+        .json({ usefulInfo })
         .end();
     }
 
     await onlyLoggedInAdmin({ req, res });
 
     // ADD
-    if (requestedUrl === "/api/news/add") {
+    if (requestedUrl === "/api/useful-info/add") {
       const schema = {
         type: "object",
-        required: ["newsValues"],
+        required: ["usefulInfoValues"],
         properties: {
-          newsValues: {
+          usefulInfoValues: {
             type: "object",
             required: ["title"],
             properties: {
               title: { type: "string" },
               description: { type: "string" },
-              thumbnail: { type: "string" },
               content: { type: "string" }
             }
           }
         }
       };
 
-      const { newsValues: newNews } = checkParams<any>(req.body, schema, res);
+      const { usefulInfoValues: newUsefulInfo } = checkParams<any>(req.body, schema, res);
 
-      const { insertedId: newNewsId } = await NewsDb.insertOne({
-        ...newNews,
+      const { insertedId: newUsefulInfoId } = await UsefulInfoDb.insertOne({
+        ...newUsefulInfo,
         createdAt: new Date()
       });
 
       res
         .status(200)
-        .json({ newNewsId })
+        .json({ newUsefulInfoId })
         .end();
     }
     // EDIT
-    else if (requestedUrl === "/api/news/edit") {
+    else if (requestedUrl === "/api/useful-info/edit") {
       const schema = {
         type: "object",
-        required: ["newsValues", "newsId"],
+        required: ["usefulInfoValues", "usefulInfoId"],
         properties: {
-          newsId: { type: "string" },
-          newsValues: {
+          usefulInfoId: { type: "string" },
+          usefulInfoValues: {
             type: "object",
             required: ["title"],
             properties: {
               title: { type: "string" },
               description: { type: "string" },
-              thumbnail: { type: "string" },
               content: { type: "string" }
             }
           }
         }
       };
 
-      const { newsId, newsValues } = checkParams<any>(req.body, schema, res);
+      const { usefulInfoId, usefulInfoValues } = checkParams<any>(req.body, schema, res);
 
-      const { modifiedCount } = await NewsDb.updateOne(
-        { _id: new ObjectId(newsId) },
+      const { modifiedCount } = await UsefulInfoDb.updateOne(
+        { _id: new ObjectId(usefulInfoId) },
         {
           $set: {
-            ...newsValues,
+            ...usefulInfoValues,
             updatedAt: new Date()
           }
         }
@@ -109,24 +107,24 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .end();
     }
     // DELETE
-    else if (requestedUrl === "/api/news/remove") {
+    else if (requestedUrl === "/api/useful-info/remove") {
       const schema = {
         type: "object",
-        required: ["newsId"],
+        required: ["usefulInfoId"],
         properties: {
-          newsId: { type: "string" }
+          usefulInfoId: { type: "string" }
         }
       };
 
-      const { newsId } = checkParams<any>(req.body, schema, res);
+      const { usefulInfoId } = checkParams<any>(req.body, schema, res);
 
-      const news = await NewsDb.deleteOne({
-        _id: new ObjectId(newsId)
+      const usefulInfo = await UsefulInfoDb.deleteOne({
+        _id: new ObjectId(usefulInfoId)
       });
 
       res
         .status(200)
-        .json({ news })
+        .json({ usefulInfo })
         .end();
     }
   } catch (e) {

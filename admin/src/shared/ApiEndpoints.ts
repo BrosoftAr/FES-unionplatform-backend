@@ -21,5 +21,11 @@ const ApiEndpoints = {
   NEWS_ADD: "news/add",
   NEWS_EDIT: "news/edit",
   NEWS_REMOVE: "news/remove",
+  USEFUL_INFO_LIST: "useful-info/list",
+  USEFUL_INFO_DETAIL: "useful-info/detail",
+  USEFUL_INFO_ADD: "useful-info/add",
+  USEFUL_INFO_EDIT: "useful-info/edit",
+  USEFUL_INFO_REMOVE: "useful-info/remove",
+
 };
 export default ApiEndpoints;

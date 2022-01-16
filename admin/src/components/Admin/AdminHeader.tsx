@@ -21,9 +21,9 @@ const AdminHeader = () => {
         <Menu.Item>
           <Link to={URLS.ADMIN_NEWS}>Noticias</Link>
         </Menu.Item>
-        {/* <Menu.Item>
-          <Link to={URLS.ADMIN_UNIONS}>Sindicatos</Link>
-        </Menu.Item> */}
+        <Menu.Item>
+          <Link to={URLS.ADMIN_USEFUL_INFO}>Información Útil</Link>
+        </Menu.Item>
         <Menu.Item className="header-menu__right">
           <Link
             onClick={() => localStorage.removeItem("token")}
