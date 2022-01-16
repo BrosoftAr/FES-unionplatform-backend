@@ -7,6 +7,7 @@ import { User } from "../../types/User";
 interface MethodParams {
   email: string;
   password: string;
+  admin: boolean;
 }
 
 const schema = {
@@ -15,12 +16,13 @@ const schema = {
   properties: {
     email: { type: "string" },
     password: { type: "string" },
+    admin: { type: "boolean" },
   },
 };
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    const { email, password } = checkParams<MethodParams>(
+    const { email, password, admin } = checkParams<MethodParams>(
       req.body,
       schema,
       res
@@ -48,6 +50,15 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .end();
       return;
     }
+
+    if(admin && !["ADMIN", "REPORTER"].includes(user.role)) {
+      res
+        .status(400)
+        .json({ message: "Usuario no tiene permisos para acceder" })
+        .end();
+      return;
+    }
+
     const token = signWithToken({
       userId: user._id,
       email: user.email,

@@ -1,0 +1,41 @@
+.percentage-stat {
+  margin-bottom: 1.6em;
+
+  &__labels {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  &__title,
+  &__number {
+    display: block;
+    font-size: 1.5em;
+    font-weight: 900;
+    line-height: 1.375em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  &__title {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+  &__number {
+    text-align: right;
+  }
+
+  &__bar {
+    display: block;
+    background: #cbcbcb;
+    border-radius: 5px;
+    height: 9px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  &__bar-inner {
+    display: block;
+    background: #324663;
+    height: 100%;
+  }
+}

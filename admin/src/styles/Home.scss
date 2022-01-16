@@ -1,0 +1,104 @@
+.home {
+  font-size: 10px;
+  position: relative;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 100vh;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+
+  &__logo {
+    position: absolute;
+    z-index: 1;
+    top: 2.2em;
+    width: 30.8em;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+
+    & img {
+      width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 800px) {
+      width: 60%;
+      max-width: 28em;
+      top: 0.5em;
+    }
+
+    @media (max-width: 480px) {
+      width: 60%;
+      max-width: 22em;
+      top: 0.5em;
+    }
+  }
+
+  &__sidebar {
+    flex: 0 0 32em;
+    height: 100%;
+    background-color: rgba(36, 36, 36, 0.8);
+    z-index: 1;
+    position: relative;
+    padding: 3em 2em;
+    overflow: auto;
+
+    @media (max-width: 480px) {
+      padding: 1.5em 1em 1em;
+      height: auto;
+      flex: 0 0 auto;
+    }
+
+    &--left {
+      @media (max-width: 480px) {
+        background: #333;
+      }
+    }
+
+    @media (max-width: 1600px) {
+      font-size: 0.8em;
+    }
+  }
+
+  &__map {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    @media (max-width: 480px) {
+      position: relative;
+      order: -1;
+    }
+  }
+
+  &__scroll-button {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background: rgba(161, 51, 78, 0.8);
+    padding: 1.7em 2em;
+    width: 100%;
+    text-align: center;
+    outline: none;
+    border: none;
+    cursor: pointer;
+
+    @media (max-width: 480px) {
+      display: block;
+    }
+  }
+  &--min-version &__scroll-button {
+    display: none;
+  }
+
+  &__scroll-button-title {
+    font-size: 2em;
+    color: #fff;
+    font-weight: 600;
+  }
+}

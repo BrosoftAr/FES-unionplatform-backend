@@ -4,9 +4,8 @@ import { allowCors, onlyLoggedIn, checkParams } from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 import { getHashForPassword } from "../imports/auth";
 
-module.exports = async (req: NowRequest, res: NowResponse) => {
+module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    allowCors({ res });
     await onlyLoggedIn({ req, res });
     const requestedUrl = req.url;
 
@@ -140,4 +139,4 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
   } catch (e) {
     console.log(e);
   }
-};
+});

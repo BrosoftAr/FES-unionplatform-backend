@@ -2,7 +2,6 @@ import Ajv from "ajv";
 import { NowResponse } from "@now/node";
 import getDatabaseConnection from "./dbConnection";
 import { ObjectID } from "mongodb";
-import fetch from "node-fetch";
 
 const ajv = new Ajv({ allErrors: true, removeAdditional: "all" });
 
@@ -52,59 +51,41 @@ export const onlyLoggedIn = async ({ req, res }) => {
   try {
     const validatedToken = jwt.verify(token, secret);
     const db = await getDatabaseConnection();
-    const Users = await db.collection("user");
-    const user = Users.findOne({ _id: new ObjectID(validatedToken.userId) });
+    const Users = await db.collection("users");
+    const user = await Users.findOne({ _id: new ObjectID(validatedToken.userId) });
 
     if (!user) {
       throw new Error("User does not exist");
     }
+
+    return user;
   } catch {
     res.status(401).end();
     throw new Error("Token not valid");
   }
 };
 
-export const getPlaceInformation = async ({ place_id }) => {
-  const googleMapsApiKey = "AIzaSyA6v4nkwb4XOzB2xVKHNdNyoy44c0dGAZg";
-  const endpoint = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place_id}&fields=address_components&key=${googleMapsApiKey}`;
+
+export const onlyLoggedInAdmin = async ({ req, res }) => {
+  const { authorization: token } = req.headers;
+  if (!token) {
+    res.status(401).end();
+    throw new Error("Authorization header not present");
+  }
 
   try {
-    const response = await fetch(endpoint);
-    const json = await response.json();
-    const { address_components } = json.result;
+    const validatedToken = jwt.verify(token, secret);
+    const db = await getDatabaseConnection();
+    const Users = await db.collection("users");
+    const user = await Users.findOne({ _id: new ObjectID(validatedToken.userId), role: {$in: ["ADMIN", "REPORTER"]} });
 
-    const locality = address_components.find((add) => {
-      return add.types.includes("political") && add.types.includes("locality");
-    });
+    if (!user) {
+      throw new Error("User does not exist");
+    }
 
-    const district = address_components.find((add) => {
-      return (
-        add.types.includes("political") &&
-        add.types.includes("administrative_area_level_2")
-      );
-    });
-
-    const province = address_components.find((add) => {
-      return (
-        add.types.includes("political") &&
-        add.types.includes("administrative_area_level_1")
-      );
-    });
-
-    return {
-      locality,
-      district,
-      province,
-      address_components,
-    };
-  } catch (e) {
-    console.log(e);
-
-    return {
-      locality: undefined,
-      district: undefined,
-      province: undefined,
-      address_components: undefined,
-    };
+    return user;
+  } catch {
+    res.status(401).end();
+    throw new Error("Token not valid");
   }
 };

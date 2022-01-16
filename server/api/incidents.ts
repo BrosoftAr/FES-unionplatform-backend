@@ -8,41 +8,47 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
     const requestedUrl = req.url;
 
     const db = await getDatabaseConnection();
-    const Categories = await db.collection("categories");
+    const IncidentsDb = await db.collection("incidents");
 
+    const user = await onlyLoggedIn({ req, res });
+    
     // LIST
-    if (requestedUrl === "/api/categories/list") {
-      const categories = await Categories.find({}).toArray();
-      res.status(200).json({ categories });
+    if (requestedUrl === "/api/incidents/list") {
+      const incidents = await IncidentsDb.find({createdBy: user._id}).toArray();
+      res.status(200).json({ incidents });
       return;
     }
 
-    await onlyLoggedIn({ req, res });
 
     // ADD
-    if (requestedUrl === "/api/categories/add") {
+    if (requestedUrl === "/api/incidents/add") {
+
+      console.log('user', user)
       const schema = {
         type: "object",
-        required: ["categoryValues"],
+        required: ["description", "image", "place", "role", "situation"],
         properties: {
-          categoryValues: {
-            type: "object",
-            required: ["title"],
-            properties: {
-              title: { type: "string" }
-            }
-          }
+          description: { type: "string" },
+          image: { type: "string" },
+          place: { type: "string" },
+          role: { type: "string" },
+          situation: { type: "string" },
         }
       };
 
-      const { categoryValues: newCategory } = checkParams<any>(
+      const { description, image, place, role, situation } = checkParams<any>(
         req.body,
         schema,
         res
       );
 
-      const { insertedId: newCategoryId } = await Categories.insertOne({
-        ...newCategory,
+      const { insertedId: newCategoryId } = await IncidentsDb.insertOne({
+        description,
+        image,
+        place,
+        role,
+        situation,
+        createdBy: user._id,
         createdAt: new Date()
       });
 
@@ -52,7 +58,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .end();
     }
     // EDIT
-    else if (requestedUrl === "/api/categories/edit") {
+    else if (requestedUrl === "/api/incidents/edit") {
       const schema = {
         type: "object",
         required: ["categoryValues", "categoryId"],
@@ -74,7 +80,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         res
       );
 
-      const { modifiedCount } = await Categories.updateOne(
+      const { modifiedCount } = await IncidentsDb.updateOne(
         { _id: new ObjectId(categoryId) },
         {
           $set: {
@@ -90,7 +96,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .end();
     }
     // DETAIL
-    else if (requestedUrl === "/api/categories/detail") {
+    else if (requestedUrl === "/api/incidents/detail") {
       const schema = {
         type: "object",
         required: ["categoryId"],
@@ -101,7 +107,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
       const { categoryId } = checkParams<any>(req.body, schema, res);
 
-      const category = await Categories.findOne({
+      const category = await IncidentsDb.findOne({
         _id: new ObjectId(categoryId)
       });
 

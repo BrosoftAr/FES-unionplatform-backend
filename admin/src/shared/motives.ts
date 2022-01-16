@@ -1,0 +1,32 @@
+export const motivesEnum = {
+  REINCORPORACION_DESPEDIDOS: "REINCORPORACION_DESPEDIDOS",
+  CESE_SUSPENSIONES: "CESE_SUSPENSIONES",
+  DEMANDA_SEGURIDAD_HIGIENE: "DEMANDA_SEGURIDAD_HIGIENE",
+  CONDICIONES_LABORALES: "CONDICIONES_LABORALES",
+  TRATO_DISCRIMINATORIO_SANCIONES: "TRATO_DISCRIMINATORIO_SANCIONES",
+  PARITARIAS_RECOMPOSICION_SALARIAL: "PARITARIAS_RECOMPOSICION_SALARIAL",
+  REGULACION_CONTRATO_LABORAL: "REGULACION_CONTRATO_LABORAL",
+  PASE_A_PLANTA: "PASE_A_PLANTA",
+  RECLAMOS_POR_REPRESENTACION: "RECLAMOS_POR_REPRESENTACION",
+  PAGOS_ADEUDADOS: "PAGOS_ADEUDADOS",
+  CONTRA_CIERRE_PLANTA: "CONTRA_CIERRE_PLANTA",
+  DESOCUPADOS_TRABAJO: "DESOCUPADOS_TRABAJO",
+};
+
+export const motivesLabelsEnum = {
+  [motivesEnum.REINCORPORACION_DESPEDIDOS]: "Reincorporación de t. despedidos",
+  [motivesEnum.CESE_SUSPENSIONES]: "Cese de suspensiones",
+
+  [motivesEnum.DEMANDA_SEGURIDAD_HIGIENE]: "Demandas de seguridad y/o higiene",
+  [motivesEnum.PASE_A_PLANTA]: "Pase a planta",
+  [motivesEnum.CONDICIONES_LABORALES]: "Condiciones laborales",
+  [motivesEnum.TRATO_DISCRIMINATORIO_SANCIONES]:
+    "Trato discriminatorio/sanciones",
+  [motivesEnum.PARITARIAS_RECOMPOSICION_SALARIAL]:
+    "Paritarias / recomposición salarial",
+  [motivesEnum.REGULACION_CONTRATO_LABORAL]: "Regulacion de contrato laboral",
+  [motivesEnum.RECLAMOS_POR_REPRESENTACION]: "Reclamos por representación",
+  [motivesEnum.PAGOS_ADEUDADOS]: "Pagos adeudados",
+  [motivesEnum.CONTRA_CIERRE_PLANTA]: "Contra cierre planta",
+  [motivesEnum.DESOCUPADOS_TRABAJO]: "Por trabajo - Desocupados",
+};

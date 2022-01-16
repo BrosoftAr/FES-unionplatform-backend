@@ -1,0 +1,36 @@
+.article-preview {
+  &__image {
+    height: 10em;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1em;
+  }
+  &__img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: auto;
+  }
+
+  &__title {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.6em;
+    line-height: 1.2em;
+    opacity: 0.9;
+  }
+
+  & + .article-preview {
+    border-top: 2px solid #a1334e;
+    padding-top: 2.5em;
+    margin-top: 2em;
+
+    @media (max-width: 480px) {
+      margin-top: 1em;
+      padding-top: 1.5em;
+    }
+  }
+}
