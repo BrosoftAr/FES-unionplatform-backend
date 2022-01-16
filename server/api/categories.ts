@@ -3,9 +3,8 @@ import { ObjectId } from "mongodb";
 import { allowCors, onlyLoggedIn, checkParams } from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 
-module.exports = async (req: NowRequest, res: NowResponse) => {
+module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    allowCors({ res });
     const requestedUrl = req.url;
 
     const db = await getDatabaseConnection();
@@ -30,10 +29,10 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
             type: "object",
             required: ["title"],
             properties: {
-              title: { type: "string" },
-            },
-          },
-        },
+              title: { type: "string" }
+            }
+          }
+        }
       };
 
       const { categoryValues: newCategory } = checkParams<any>(
@@ -44,7 +43,7 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
 
       const { insertedId: newCategoryId } = await Categories.insertOne({
         ...newCategory,
-        createdAt: new Date(),
+        createdAt: new Date()
       });
 
       res
@@ -63,10 +62,10 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
             type: "object",
             required: ["title"],
             properties: {
-              title: { type: "string" },
-            },
-          },
-        },
+              title: { type: "string" }
+            }
+          }
+        }
       };
 
       const { categoryId, categoryValues } = checkParams<any>(
@@ -80,8 +79,8 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
         {
           $set: {
             ...categoryValues,
-            updatedAt: new Date(),
-          },
+            updatedAt: new Date()
+          }
         }
       );
 
@@ -96,14 +95,14 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
         type: "object",
         required: ["categoryId"],
         properties: {
-          categoryId: { type: "string" },
-        },
+          categoryId: { type: "string" }
+        }
       };
 
       const { categoryId } = checkParams<any>(req.body, schema, res);
 
       const category = await Categories.findOne({
-        _id: new ObjectId(categoryId),
+        _id: new ObjectId(categoryId)
       });
 
       res
@@ -114,4 +113,4 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
   } catch (e) {
     console.log(e);
   }
-};
+});

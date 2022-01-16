@@ -12,9 +12,8 @@ import { organizationTypeLabelEnum } from "../../client/src/shared/organizationT
 
 const stringify = require("csv-stringify/lib/sync");
 
-module.exports = async (req: NowRequest, res: NowResponse) => {
+module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    allowCors({ res });
     const requestedUrl = req.url;
 
     const db = await getDatabaseConnection();
@@ -143,4 +142,4 @@ module.exports = async (req: NowRequest, res: NowResponse) => {
   } catch (e) {
     console.log(e);
   }
-};
+});
