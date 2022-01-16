@@ -12,7 +12,17 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
     // LIST
     if (requestedUrl === "/api/useful-info/list") {
-      const usefulInfo = await UsefulInfoDb.find({}).toArray();
+      const schema = {
+        type: "object",
+        required: ["limit"],
+        properties: {
+          limit: { type: "number" }
+        }
+      };
+      const { limit } = checkParams<any>(req.body, schema, res);
+
+      const usefulInfo = await UsefulInfoDb.find({}).limit(limit).sort("createdAt", -1).toArray();
+
       res.status(200).json({ usefulInfo });
       return;
     }

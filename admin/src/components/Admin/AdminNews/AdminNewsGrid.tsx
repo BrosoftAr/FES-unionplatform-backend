@@ -12,7 +12,7 @@ import FetchService from "../../../shared/fetchService";
 import ApiEndpoints from "../../../shared/ApiEndpoints";
 
 const AdminNewsGrid = () => {
-  const { news, isLoadingNews, fetchNews } = useNews();
+  const { news, isLoadingNews, fetchNews } = useNews({});
 
   return (
     <Card
