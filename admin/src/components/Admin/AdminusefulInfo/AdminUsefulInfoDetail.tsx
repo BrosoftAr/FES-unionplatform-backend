@@ -6,6 +6,7 @@ import ApiEndpoints from "../../../shared/ApiEndpoints";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import URLS from "../../../shared/urls";
 import { UsefulInfo } from "../../../shared/UsefulInfo";
+import HtmlEditor from "../../HtmlEditor";
 
 interface UsefulInfoFormValues {
   title: string;
@@ -107,7 +108,7 @@ const AdminUsefulInfoDetail: React.FunctionComponent<RouteComponentProps<
             </Form.Item>
 
             <Form.Item label="Contenido" name="content" rules={[{ required: true }]}>
-              <Input.TextArea autoFocus />
+              <HtmlEditor />
             </Form.Item>
 
 

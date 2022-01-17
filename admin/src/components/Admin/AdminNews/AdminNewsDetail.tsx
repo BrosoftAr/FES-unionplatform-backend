@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Card, Form, Input, Row, Col, Button, message, Spin } from "antd";
 import BackCardTitle from "../../BackCardTitle";
 import FetchService from "../../../shared/fetchService";
@@ -6,6 +6,7 @@ import ApiEndpoints from "../../../shared/ApiEndpoints";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import URLS from "../../../shared/urls";
 import { News } from "../../../shared/News";
+import HtmlEditor from "../../HtmlEditor";
 
 interface NewsFormValues {
   title: string;
@@ -18,9 +19,12 @@ interface AdminNewsDetailRouteParams {
   _id?: string;
 }
 
+
+
 const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
   AdminNewsDetailRouteParams
 >> = ({ match, history }) => {
+
   const isEditing = !!match.params && match.params._id;
   const newsId = isEditing && match.params._id;
 
@@ -35,7 +39,7 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
       const endpoint = isEditing
         ? ApiEndpoints.NEWS_EDIT
         : ApiEndpoints.NEWS_ADD;
-        
+
       await FetchService.request(endpoint, {
         body: JSON.stringify({
           newsValues: formValues,
@@ -43,9 +47,7 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
         }),
       });
       form.resetFields();
-      message.success(
-        isEditing ? "Noticia actualizada" : "Noticia guardada"
-      );
+      message.success(isEditing ? "Noticia actualizada" : "Noticia guardada");
 
       history.push(URLS.ADMIN_NEWS);
     } catch (e) {
@@ -104,18 +106,29 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
               <Input autoFocus />
             </Form.Item>
 
-            <Form.Item label="Descripción corta" name="description" rules={[{ required: true }]}>
-              <Input autoFocus />
-            </Form.Item>
-            
-            <Form.Item label="URL de Imagen" name="thumbnail" rules={[{ required: true }]}>
+            <Form.Item
+              label="Descripción corta"
+              name="description"
+              rules={[{ required: true }]}
+            >
               <Input autoFocus />
             </Form.Item>
 
-            <Form.Item label="Contenido" name="content" rules={[{ required: true }]}>
-              <Input.TextArea autoFocus />
+            <Form.Item
+              label="URL de Imagen"
+              name="thumbnail"
+              rules={[{ required: true }]}
+            >
+              <Input autoFocus />
             </Form.Item>
 
+            <Form.Item
+              label="Contenido"
+              name="content"
+              rules={[{ required: true }]}
+            >
+              <HtmlEditor />
+            </Form.Item>
 
             <div style={{ textAlign: "right" }}>
               <Button
