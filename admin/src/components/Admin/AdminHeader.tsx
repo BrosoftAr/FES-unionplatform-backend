@@ -16,7 +16,7 @@ const AdminHeader = () => {
           <Link to={URLS.ADMIN_USERS}>Usuarios</Link>
         </Menu.Item>
         <Menu.Item>
-          <Link to={URLS.ADMIN_CONFLICTS}>Conflictos</Link>
+          <Link to={URLS.ADMIN_INCIDENTS}>Incidentes</Link>
         </Menu.Item>
         <Menu.Item>
           <Link to={URLS.ADMIN_NEWS}>Noticias</Link>

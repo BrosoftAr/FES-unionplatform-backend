@@ -1,6 +1,11 @@
 import { NowRequest, NowResponse } from "@now/node";
 import { ObjectId } from "mongodb";
-import { allowCors, onlyLoggedIn, checkParams, onlyLoggedInAdmin } from "../imports/helpers";
+import {
+  allowCors,
+  onlyLoggedIn,
+  checkParams,
+  onlyLoggedInAdmin
+} from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
@@ -11,10 +16,21 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
     const IncidentsDb = await db.collection("incidents");
 
     const user = await onlyLoggedIn({ req, res });
-    
+
     // LIST
     if (requestedUrl === "/api/incidents/list") {
-      const incidents = await IncidentsDb.find({createdBy: user._id}).toArray();
+      const schema = {
+        type: "object",
+        required: ["limit"],
+        properties: {
+          limit: { type: "number" }
+        }
+      };
+      const { limit } = checkParams<any>(req.body, schema, res);
+
+      const query = user.role === "WORKER" ? { createdBy: user._id } : {};
+
+      const incidents = await IncidentsDb.find(query).limit(limit).toArray();
       res.status(200).json({ incidents });
       return;
     }
@@ -44,8 +60,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
     // ADD
     if (requestedUrl === "/api/incidents/add") {
-
-      console.log('user', user)
+      console.log("user", user);
       const schema = {
         type: "object",
         required: ["description", "image", "place", "role", "situation"],
@@ -54,7 +69,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
           image: { type: "string" },
           place: { type: "string" },
           role: { type: "string" },
-          situation: { type: "string" },
+          situation: { type: "string" }
         }
       };
 
@@ -71,7 +86,8 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         role,
         situation,
         createdBy: user._id,
-        createdAt: new Date()
+        createdAt: new Date(),
+        status: "RECEIVED"
       });
 
       res
@@ -79,34 +95,28 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .json({ newCategoryId })
         .end();
     }
-    // EDIT
-    else if (requestedUrl === "/api/incidents/edit") {
+    // UDPATE STATUS
+    else if (requestedUrl === "/api/incidents/updateStatus") {
       const schema = {
         type: "object",
-        required: ["categoryValues", "categoryId"],
+        required: ["incidentId", "newStatus"],
         properties: {
-          categoryId: { type: "string" },
-          categoryValues: {
-            type: "object",
-            required: ["title"],
-            properties: {
-              title: { type: "string" }
-            }
-          }
+          incidentId: { type: "string" },
+          newStatus: { type: "string" },
         }
       };
 
-      const { categoryId, categoryValues } = checkParams<any>(
+      const { incidentId, newStatus } = checkParams<any>(
         req.body,
         schema,
         res
       );
 
       const { modifiedCount } = await IncidentsDb.updateOne(
-        { _id: new ObjectId(categoryId) },
+        { _id: new ObjectId(incidentId) },
         {
           $set: {
-            ...categoryValues,
+            status: newStatus,
             updatedAt: new Date()
           }
         }
@@ -117,7 +127,6 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .json({ modifiedCount })
         .end();
     }
-    
   } catch (e) {
     console.log(e);
   }

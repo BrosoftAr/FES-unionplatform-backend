@@ -14,7 +14,7 @@ const useNews = ({ limit = 0 }: useNewsParams) => {
   const fetchNews = async () => {
     setIsLoadingNews(true);
     const { news } = await FetchService.request(ApiEndpoints.NEWS_LIST, {
-      body: JSON.stringify(limit),
+      body: JSON.stringify({limit}),
     });
     setNews(news);
     setIsLoadingNews(false);

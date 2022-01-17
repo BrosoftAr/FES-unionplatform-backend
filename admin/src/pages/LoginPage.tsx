@@ -6,7 +6,7 @@ const LoginPage = () => {
   return (
     <div
       style={{
-        background: "#fafafa",
+        background: "#ddd",
         height: "100vh",
         display: "flex",
         justifyContent: "center",

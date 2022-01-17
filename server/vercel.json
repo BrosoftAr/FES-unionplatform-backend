@@ -17,7 +17,7 @@
       "methods": ["POST", "OPTIONS"]
     },
     {
-      "src": "/api/incidents/(add|detail|edit|list)",
+      "src": "/api/incidents/(add|detail|updateStatus|list)",
       "dest": "/api/incidents",
       "headers": {
         "Access-Control-Allow-Origin": "*",

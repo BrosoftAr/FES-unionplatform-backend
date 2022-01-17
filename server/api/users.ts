@@ -1,12 +1,12 @@
 import { NowRequest, NowResponse } from "@now/node";
 import { ObjectId, ObjectID } from "mongodb";
-import { allowCors, onlyLoggedIn, checkParams } from "../imports/helpers";
+import { allowCors,  checkParams, onlyLoggedInAdmin } from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 import { getHashForPassword } from "../imports/auth";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    await onlyLoggedIn({ req, res });
+    await onlyLoggedInAdmin({ req, res });
     const requestedUrl = req.url;
 
     const db = await getDatabaseConnection();

@@ -40,6 +40,14 @@ const AdminUsersGrid = () => {
             key: "email",
           },
           {
+            title: "Verificado",
+            dataIndex: "isVerified",
+            key: "isVerified",
+            render(isVerified){
+              return isVerified ? "Si" : "No";
+            }
+          },
+          {
             width: 200,
             title: "Acciones",
             key: "actions",

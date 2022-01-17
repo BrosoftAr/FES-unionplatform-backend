@@ -10,6 +10,8 @@ import AdminNewsGrid from "../components/Admin/AdminNews/AdminNewsGrid";
 import AdminNewsDetail from "../components/Admin/AdminNews/AdminNewsDetail";
 import AdminUsefulInfoGrid from "../components/Admin/AdminusefulInfo/AdminUsefulInfoGrid";
 import AdminUsefulInfoDetail from "../components/Admin/AdminusefulInfo/AdminUsefulInfoDetail";
+import AdminIncidentsGrid from "../components/Admin/AdminIncidents/AdminIncidentsGrid";
+import AdminIncidentsDetail from "../components/Admin/AdminIncidents/AdminIncidentsDetail";
 
 const AdminPage = () => (
   <Layout>
@@ -61,6 +63,14 @@ const AdminPage = () => (
             exact
             path={URLS.ADMIN_USEFUL_INFO_EDIT}
             component={AdminUsefulInfoDetail}
+          />
+
+          {/* Incidents */}
+          <Route exact path={URLS.ADMIN_INCIDENTS} component={AdminIncidentsGrid} />
+          <Route
+            exact
+            path={URLS.ADMIN_INCIDENTS_EDIT}
+            component={AdminIncidentsDetail}
           />
         </Switch>
       </div>

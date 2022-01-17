@@ -1,17 +1,5 @@
 const ApiEndpoints = {
   LOGIN: "auth/login",
-  SOCIAL_CONFLICTS_LIST: "socialConflicts/list",
-  SOCIAL_CONFLICTS_DETAIL: "socialConflicts/detail",
-  SOCIAL_CONFLICTS_ADD: "socialConflicts/add",
-  SOCIAL_CONFLICTS_EDIT: "socialConflicts/edit",
-  SOCIAL_CONFLICTS_REMOVE: "socialConflicts/remove",
-  CATEGORIES_LIST: "categories/list",
-  CATEGORIES_DETAIL: "categories/detail",
-  CATEGORIES_ADD: "categories/add",
-  CATEGORIES_EDIT: "categories/edit",
-  ARTICLES_GET_LATEST: "articles/getLatest",
-  ARTICLES_GET_FEATURED: "articles/getFeatured",
-  ARTICLES_GET_DETAILS: "articles/getDetails",
   USERS_LIST: "users/list",
   USERS_DETAIL: "users/detail",
   USERS_ADD: "users/add",
@@ -26,6 +14,11 @@ const ApiEndpoints = {
   USEFUL_INFO_ADD: "useful-info/add",
   USEFUL_INFO_EDIT: "useful-info/edit",
   USEFUL_INFO_REMOVE: "useful-info/remove",
+  INCIDENTS_LIST: "incidents/list",
+  INCIDENTS_DETAIL: "incidents/detail",
+  INCIDENTS_ADD: "incidents/add",
+  INCIDENTS_UPDATE_STATUS: "incidents/updateStatus",
+
 
 };
 export default ApiEndpoints;
