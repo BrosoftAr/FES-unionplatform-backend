@@ -1,9 +1,16 @@
 import getDatabaseConnection from "../../imports/dbConnection";
 import { NowRequest, NowResponse } from "@now/node";
-import { allowCors, checkParams, signWithToken } from "../../imports/helpers";
+import {
+  allowCors,
+  checkParams,
+  getHtmlTemplate,
+  replaceAll,
+  signWithToken
+} from "../../imports/helpers";
 import { checkPasswordHash } from "../../imports/auth";
 import { User } from "../../types/User";
 import moment from "moment";
+import EmailService from "../../imports/EmailService";
 
 interface MethodParams {
   email: string;
@@ -64,6 +71,33 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         return;
       }
 
+      if (!user.isVerified) {
+        const activationLink = `${process.env.FRONTEND_CLIENT_URL}auth/verify/${user.verificationToken.token}`;
+
+        let html = getHtmlTemplate("signup-email-template");
+        html = replaceAll(
+          replaceAll(html, "{USERNAME}", `${user.workerProfile.name} ${user.workerProfile.lastName}`),
+          "{ACTIVATIONLINK}",
+          activationLink
+        );
+
+        await EmailService.sendEmail({
+          to: email,
+          subject: "Activar cuenta de Union Platform",
+          text: "Por favor active su cuenta",
+          html
+        });
+
+        res
+          .status(400)
+          .json({
+            message:
+              "El usuario no esta activo. Verifique su email y active su cuenta."
+          })
+          .end();
+        return;
+      }
+
       const token = signWithToken({
         userId: user._id,
         email: user.email,
@@ -108,7 +142,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         return;
       }
 
-      if (user.isVerified) {
+      if (user.isVerified) { 
         res
           .status(400)
           .json({
