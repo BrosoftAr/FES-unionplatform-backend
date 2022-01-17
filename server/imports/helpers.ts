@@ -2,10 +2,12 @@ import Ajv from "ajv";
 import { NowResponse } from "@now/node";
 import getDatabaseConnection from "./dbConnection";
 import { ObjectID } from "mongodb";
+import moment from "moment";
 
 const ajv = new Ajv({ allErrors: true, removeAdditional: "all" });
 
 const jwt = require("jsonwebtoken");
+const randomstring = require("randomstring");
 
 const secret = process.env.AUTH_JWT_SECRET;
 
@@ -89,3 +91,29 @@ export const onlyLoggedInAdmin = async ({ req, res }) => {
     throw new Error("Token not valid");
   }
 };
+
+
+export const createVerificationToken = () => {
+  return {
+    token: randomstring.generate(),
+    expiresAt: moment().add('1', 'day').toDate() 
+  }
+}
+
+const path = require('path');
+const fs = require('fs')
+
+export const getHtmlTemplate = (templateName: string): string => {
+
+  var htmlPath = path.join(__dirname, '..', 'emails', `${templateName}.html`);
+  var htmlString = fs.readFileSync(htmlPath, 'utf8');
+
+  return htmlString;
+}
+
+const escapeRegExp = (string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+export const replaceAll = (str, find, replace) => {
+  return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+}

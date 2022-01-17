@@ -12,7 +12,12 @@ export type User = {
     name: string;
     lastName: string;
     phone: string;
-  }
+  };
+  isVerified: boolean;
+  verificationToken: {
+    token: string;
+    expiresAt: Date;
+  } | null;
   createdAt: Date;
 };
 

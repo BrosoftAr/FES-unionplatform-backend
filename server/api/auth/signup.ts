@@ -1,8 +1,16 @@
 import getDatabaseConnection from "../../imports/dbConnection";
 import { VercelRequest, VercelResponse } from "@vercel/node";
-import { allowCors, checkParams, signWithToken } from "../../imports/helpers";
+import {
+  allowCors,
+  checkParams,
+  createVerificationToken,
+  getHtmlTemplate,
+  replaceAll,
+  signWithToken
+} from "../../imports/helpers";
 import { getHashForPassword } from "../../imports/auth";
 import { User } from "../../types/User";
+import EmailService from "../../imports/EmailService";
 
 interface MethodParams {
   affiliateNumber: string;
@@ -40,7 +48,7 @@ module.exports = allowCors(async (req: VercelRequest, res: VercelResponse) => {
       affiliateNumber
     } = checkParams<MethodParams>(req.body, schema, res);
 
-    console.log('here')
+    console.log("here");
 
     const db = await getDatabaseConnection();
     const Users = await db.collection("users");
@@ -68,10 +76,24 @@ module.exports = allowCors(async (req: VercelRequest, res: VercelResponse) => {
         name,
         lastName
       },
-      createdAt: new Date()
+      createdAt: new Date(),
+      isVerified: false,
+      verificationToken: createVerificationToken()
     };
 
     const { insertedId: newUserId } = await Users.insertOne(newUser);
+
+    const activationLink = `${process.env.FRONTEND_CLIENT_URL}auth/verify/${newUser.verificationToken.token}`;
+
+    let html = getHtmlTemplate("signup-email-template");
+    html = replaceAll(replaceAll(html, "{USERNAME}", `${name} ${lastName}`), "{ACTIVATIONLINK}", activationLink)
+
+    await EmailService.sendEmail({
+      to: email,
+      subject: "Activar cuenta de Union Platform",
+      text: "Por favor active su cuenta",
+      html
+    });
 
     res
       .status(200)

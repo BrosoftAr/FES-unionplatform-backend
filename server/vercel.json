@@ -7,6 +7,16 @@
   },
   "routes": [
     {
+      "src": "/api/auth/(login|activation)",
+      "dest": "/api/auth/login",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
+      },
+      "methods": ["POST", "OPTIONS"]
+    },
+    {
       "src": "/api/incidents/(add|detail|edit|list)",
       "dest": "/api/incidents",
       "headers": {

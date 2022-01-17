@@ -3,6 +3,7 @@ import { NowRequest, NowResponse } from "@now/node";
 import { allowCors, checkParams, signWithToken } from "../../imports/helpers";
 import { checkPasswordHash } from "../../imports/auth";
 import { User } from "../../types/User";
+import moment from "moment";
 
 interface MethodParams {
   email: string;
@@ -10,65 +11,146 @@ interface MethodParams {
   admin: boolean;
 }
 
-const schema = {
-  type: "object",
-  required: ["email", "password"],
-  properties: {
-    email: { type: "string" },
-    password: { type: "string" },
-    admin: { type: "boolean" },
-  },
-};
-
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    const { email, password, admin } = checkParams<MethodParams>(
-      req.body,
-      schema,
-      res
-    );
+    const requestedUrl = req.url;
 
     // Get a database connection, cached or otherwise,
     // using the connection string environment variable as the argument
     const db = await getDatabaseConnection();
     const Users = await db.collection<User>("users");
 
-    const user = await Users.findOne({ email });
-    if (!user) {
+    // LOGIN
+    if (requestedUrl === "/api/auth/login") {
+      const schema = {
+        type: "object",
+        required: ["email", "password"],
+        properties: {
+          email: { type: "string" },
+          password: { type: "string" },
+          admin: { type: "boolean" }
+        }
+      };
+
+      const { email, password, admin } = checkParams<MethodParams>(
+        req.body,
+        schema,
+        res
+      );
+
+      const user = await Users.findOne({ email });
+      if (!user) {
+        res
+          .status(400)
+          .json({ message: "Usuario/contraseña incorrecta" })
+          .end();
+        return;
+      }
+
+      const validPassword = await checkPasswordHash(password, user.hash);
+      if (!validPassword) {
+        res
+          .status(400)
+          .json({ message: "Usuario/contraseña incorrecta" })
+          .end();
+        return;
+      }
+
+      if (admin && !["ADMIN", "REPORTER"].includes(user.role)) {
+        res
+          .status(400)
+          .json({ message: "Usuario no tiene permisos para acceder" })
+          .end();
+        return;
+      }
+
+      const token = signWithToken({
+        userId: user._id,
+        email: user.email,
+        role: user.role
+      });
+
       res
-        .status(400)
-        .json({ message: "Usuario/contraseña incorrecta" })
+        .status(200)
+        .json({ token })
         .end();
-      return;
     }
+    // ACTIVATION
+    else if (requestedUrl === "/api/auth/activation") {
+      const schema = {
+        type: "object",
+        required: ["activationToken"],
+        properties: {
+          activationToken: { type: "string" }
+        }
+      };
 
-    const validPassword = await checkPasswordHash(password, user.hash);
-    if (!validPassword) {
+      const { activationToken } = checkParams<{ activationToken: string }>(
+        req.body,
+        schema,
+        res
+      );
+
+      console.log("activationToken", activationToken);
+
+      const user = await Users.findOne({
+        "verificationToken.token": activationToken
+      });
+
+      if (!user) {
+        res
+          .status(400)
+          .json({
+            message:
+              "El link de activación no es válido. Intente nuevamente utilizando la opción 'Olvidé mi contraseña'."
+          })
+          .end();
+        return;
+      }
+
+      if (user.isVerified) {
+        res
+          .status(400)
+          .json({
+            message:
+              "El usuario ya está activado. Puede ingresar usando el login."
+          })
+          .end();
+        return;
+      }
+
+      if (moment(user.verificationToken.expiresAt).isBefore()) {
+        res
+          .status(400)
+          .json({
+            message:
+              "El link de activación expiró. Intente nuevamente utilizando la opción 'Olvidé mi contraseña'."
+          })
+          .end();
+        return;
+      }
+
+      const token = signWithToken({
+        userId: user._id,
+        email: user.email,
+        role: user.role
+      });
+
+      await Users.updateOne(
+        { _id: user._id },
+        {
+          $set: {
+            isVerified: true,
+            verificationToken: null
+          }
+        }
+      );
+
       res
-        .status(400)
-        .json({ message: "Usuario/contraseña incorrecta" })
+        .status(200)
+        .json({ token })
         .end();
-      return;
     }
-
-    if(admin && !["ADMIN", "REPORTER"].includes(user.role)) {
-      res
-        .status(400)
-        .json({ message: "Usuario no tiene permisos para acceder" })
-        .end();
-      return;
-    }
-
-    const token = signWithToken({
-      userId: user._id,
-      email: user.email,
-      role: user.role,
-    });
-
-    res
-      .status(200)
-      .json({ token })
-      .end();
   } catch (e) {
     console.log(e);
   }
