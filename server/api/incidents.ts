@@ -30,7 +30,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
       const query = user.role === "WORKER" ? { createdBy: user._id } : {};
 
-      const incidents = await IncidentsDb.find(query).limit(limit).toArray();
+      const incidents = await IncidentsDb.find(query).limit(limit).sort("createdAt", -1).toArray();
       res.status(200).json({ incidents });
       return;
     }
@@ -69,11 +69,12 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
           image: { type: "string" },
           place: { type: "string" },
           role: { type: "string" },
-          situation: { type: "string" }
+          situation: { type: "string" },
+          reportedTo: { type: "string" }
         }
       };
 
-      const { description, image, place, role, situation } = checkParams<any>(
+      const { description, image, place, role, situation, reportedTo } = checkParams<any>(
         req.body,
         schema,
         res
@@ -85,6 +86,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         place,
         role,
         situation,
+        reportedTo,
         createdBy: user._id,
         createdAt: new Date(),
         status: "RECEIVED"
