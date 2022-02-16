@@ -98,6 +98,20 @@ const AdminIncidentsDetail: React.FunctionComponent<RouteComponentProps<
           <p>Descripción: {incident?.description}</p>
           <p>Reportado a: {incident?.reportedTo}</p>
           <p>Situación: {incident?.situation}</p>
+          {incident?.images && (
+            <p>
+              Archivos adjuntos:
+              <br />
+              {incident.images.map(({ fileName, url }) => (
+                <>
+                  <a href={url} target="_blank" rel="noreferrer" key={fileName}>
+                    {fileName}
+                  </a>
+                  <br />
+                </>
+              ))}
+            </p>
+          )}
 
           <Form.Item label="Estado" name="status" rules={[{ required: true }]}>
             <Select

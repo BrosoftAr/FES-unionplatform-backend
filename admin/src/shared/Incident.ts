@@ -10,7 +10,10 @@ export type Incident = {
   place: string;
   description: string;
   reportedTo: string;
-  image: string;
+  images: {
+    url: string;
+    fileName: string;
+  }[];
   status: "RECEIVED" | "IN_PROGRESS" | "RESOLVED";
 };
 
@@ -20,7 +23,7 @@ export enum IncidentStatusRealEnum {
   RESOLVED = "RESOLVED",
 }
 
-export const IncidentStatusEnum: {[x: string]: string} = {
+export const IncidentStatusEnum: { [x: string]: string } = {
   RECEIVED: "RECEIVED",
   IN_PROGRESS: "IN_PROGRESS",
   RESOLVED: "RESOLVED",
