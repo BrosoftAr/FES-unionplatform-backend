@@ -8,7 +8,7 @@ const BackButton: React.FunctionComponent<RouteComponentProps> = ({
 }) => {
   return (
     <Button
-      shape="circle-outline"
+      shape="circle"
       style={{ marginRight: 10 }}
       onClick={() => {
         history.goBack();

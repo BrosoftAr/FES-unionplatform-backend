@@ -16,9 +16,8 @@ const ApiEndpoints = {
   USEFUL_INFO_REMOVE: "useful-info/remove",
   INCIDENTS_LIST: "incidents/list",
   INCIDENTS_DETAIL: "incidents/detail",
-  INCIDENTS_ADD: "incidents/add",
+  INCIDENTS_ADD: "incidents/add", 
   INCIDENTS_UPDATE_STATUS: "incidents/updateStatus",
-
-
+  GET_IMAGE_UPLOAD_TOKEN: "incidents/getImageUploadToken",
 };
 export default ApiEndpoints;

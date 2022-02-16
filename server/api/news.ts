@@ -1,6 +1,11 @@
 import { NowRequest, NowResponse } from "@now/node";
 import { ObjectId } from "mongodb";
-import { allowCors, onlyLoggedIn, checkParams, onlyLoggedInAdmin } from "../imports/helpers";
+import {
+  allowCors,
+  onlyLoggedIn,
+  checkParams,
+  onlyLoggedInAdmin
+} from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
@@ -21,7 +26,10 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
       };
       const { limit } = checkParams<any>(req.body, schema, res);
 
-      const news = await NewsDb.find({}).limit(limit).sort("createdAt", -1).toArray();
+      const news = await NewsDb.find({})
+        .limit(limit)
+        .sort("createdAt", -1)
+        .toArray();
       res.status(200).json({ news });
       return;
     }
@@ -57,11 +65,18 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         properties: {
           newsValues: {
             type: "object",
-            required: ["title"],
+            required: ["title", "description", "thumbnail", "content"],
             properties: {
               title: { type: "string" },
               description: { type: "string" },
-              thumbnail: { type: "string" },
+              thumbnail: {
+                type: "object",
+                required: ["fileName", "fileKey"],
+                properties: {
+                  fileName: { type: "string" },
+                  fileKey: { type: "string" }
+                }
+              },
               content: { type: "string" }
             }
           }
@@ -72,6 +87,10 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
       const { insertedId: newNewsId } = await NewsDb.insertOne({
         ...newNews,
+        thumbnail: {
+          ...newNews.thumbnail,
+          url: `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${newNews.thumbnail.fileKey}`
+        },
         createdAt: new Date()
       });
 
@@ -93,7 +112,14 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
             properties: {
               title: { type: "string" },
               description: { type: "string" },
-              thumbnail: { type: "string" },
+              thumbnail: {
+                type: "object",
+                required: ["fileName", "fileKey"],
+                properties: {
+                  fileName: { type: "string" },
+                  fileKey: { type: "string" }
+                }
+              },
               content: { type: "string" }
             }
           }
@@ -107,6 +133,10 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         {
           $set: {
             ...newsValues,
+            thumbnail: {
+              ...newsValues.thumbnail,
+              url: `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${newsValues.thumbnail.fileKey}`
+            },
             updatedAt: new Date()
           }
         }

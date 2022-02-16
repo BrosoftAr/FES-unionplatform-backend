@@ -5,7 +5,11 @@ export type News = {
   title: string;
   description: string;
   content: string;
-  thumbnail: string;
+  thumbnail: {
+    fileName: string;
+    fileKey: string;    
+    url: string;
+  };
   createdAt: Date;
 };
 export type NewsProjection = {

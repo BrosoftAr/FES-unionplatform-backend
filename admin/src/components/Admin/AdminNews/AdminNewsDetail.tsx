@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Card, Form, Input, Row, Col, Button, message, Spin } from "antd";
+import {
+  Card,
+  Form,
+  Input,
+  Row,
+  Col,
+  Button,
+  message,
+  Spin,
+  Upload,
+} from "antd";
 import BackCardTitle from "../../BackCardTitle";
 import FetchService from "../../../shared/fetchService";
 import ApiEndpoints from "../../../shared/ApiEndpoints";
@@ -7,11 +17,11 @@ import { RouteComponentProps, withRouter } from "react-router-dom";
 import URLS from "../../../shared/urls";
 import { News } from "../../../shared/News";
 import HtmlEditor from "../../HtmlEditor";
+import { UploadOutlined } from "@ant-design/icons";
 
 interface NewsFormValues {
   title: string;
   description: string;
-  thumbnail: string;
   content: string;
 }
 
@@ -19,14 +29,20 @@ interface AdminNewsDetailRouteParams {
   _id?: string;
 }
 
-
+interface FileItem {
+  uid: string;
+  name: string;
+  status: "uploading" | "done";
+  url: string;
+  fileKey: string;
+}
 
 const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
   AdminNewsDetailRouteParams
 >> = ({ match, history }) => {
-
   const isEditing = !!match.params && match.params._id;
   const newsId = isEditing && match.params._id;
+  const [fileItem, setFileItem] = useState<FileItem>();
 
   const [form] = Form.useForm();
 
@@ -42,7 +58,13 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
 
       await FetchService.request(endpoint, {
         body: JSON.stringify({
-          newsValues: formValues,
+          newsValues: {
+            ...formValues,
+            thumbnail: {
+              fileKey: fileItem?.fileKey,
+              fileName: fileItem?.name,
+            },
+          },
           newsId,
         }),
       });
@@ -67,6 +89,15 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
         body: JSON.stringify({ newsId }),
       });
       setNews(news);
+      if (news.thumbnail && typeof news.thumbnail !== "string") {
+        setFileItem({
+          uid: news.thumbnail.fileName,
+          name: news.thumbnail.fileName,
+          status: "done",
+          url: news.thumbnail.url,
+          fileKey: news.thumbnail.fileKey,
+        });
+      }
       setIsLoadingNews(false);
     };
 
@@ -87,9 +118,65 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
       title: news.title,
       content: news.content,
       description: news.description,
-      thumbnail: news.thumbnail,
     };
   }
+
+  const imageUrl = news?.thumbnail;
+
+  const getImageToken = async (fileName: string) => {
+    const response = await FetchService.request(
+      ApiEndpoints.GET_IMAGE_UPLOAD_TOKEN,
+      {
+        body: JSON.stringify({
+          fileName,
+        }),
+      }
+    );
+    return response;
+  };
+
+  const onUpload = async (file: any) => {
+    const fileName: string = file.name;
+
+    const newFile: FileItem = {
+      uid: fileName,
+      name: fileName,
+      status: "uploading",
+      url: "",
+      fileKey: "",
+    };
+
+    setFileItem(newFile);
+
+    const { url, fields } = await getImageToken(fileName);
+    const formData = new FormData();
+
+    Object.entries({ ...fields, file }).forEach(([key, value]) => {
+      formData.append(key, value as any);
+    });
+
+    const upload = await fetch(url, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (upload.ok) {
+      console.log("Uploaded successfully!");
+      const fileKey = fields.key;
+      newFile.status = "done";
+      newFile.url = `${url}${fileKey}`;
+      newFile.fileKey = fileKey;
+
+      setFileItem(newFile);
+    } else {
+      console.error("Upload failed.");
+      message.error(
+        "Hubo un problema con la carga del archivo. Intente nuevamente. "
+      );
+    }
+
+    return false;
+  };
 
   return (
     <Card title={<BackCardTitle title="Agregar noticia" />}>
@@ -115,11 +202,22 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
             </Form.Item>
 
             <Form.Item
-              label="URL de Imagen"
+              label="Imagen"
               name="thumbnail"
               rules={[{ required: true }]}
             >
-              <Input autoFocus />
+              <Upload
+                name="images"
+                listType="picture"
+                beforeUpload={onUpload as any}
+                fileList={(fileItem ? [fileItem] : []) as any}
+                onRemove={() => setFileItem(undefined)}
+                // maxCount={1}
+              >
+                {!fileItem && (
+                  <Button icon={<UploadOutlined />}>Elegir imagen</Button>
+                )}
+              </Upload>
             </Form.Item>
 
             <Form.Item

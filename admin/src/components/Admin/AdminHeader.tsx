@@ -30,7 +30,7 @@ const AdminHeader = () => {
             to={URLS.LOGIN}
           >
             Salir
-          </Link>
+          </Link> 
         </Menu.Item>
       </Menu>
     </div>
