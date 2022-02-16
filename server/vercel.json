@@ -13,7 +13,7 @@
       "methods": ["POST", "OPTIONS"]
     },
     {
-      "src": "/api/incidents/(add|detail|updateStatus|list)",
+      "src": "/api/incidents/(add|detail|updateStatus|list|getImageUploadToken)",
       "dest": "/api/incidents",
       "headers": {
         "Access-Control-Allow-Origin": "*",

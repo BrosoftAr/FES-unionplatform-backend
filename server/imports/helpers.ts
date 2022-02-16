@@ -34,6 +34,7 @@ export function checkParams<T>(obj: T, schema, res: NowResponse) {
   const valid = validate(obj);
   if (!valid) {
     res.status(400).end();
+    console.log('errors', validate.errors)
     throw new Error("Invalid params");
   }
   return obj;

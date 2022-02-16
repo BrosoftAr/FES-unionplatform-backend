@@ -7,6 +7,8 @@ import {
   onlyLoggedInAdmin
 } from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
+import { Storage } from "@google-cloud/storage";
+import { v4 as uuidv4 } from "uuid";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
@@ -30,7 +32,10 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
       const query = user.role === "WORKER" ? { createdBy: user._id } : {};
 
-      const incidents = await IncidentsDb.find(query).limit(limit).sort("createdAt", -1).toArray();
+      const incidents = await IncidentsDb.find(query)
+        .limit(limit)
+        .sort("createdAt", -1)
+        .toArray();
       res.status(200).json({ incidents });
       return;
     }
@@ -63,10 +68,20 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
       console.log("user", user);
       const schema = {
         type: "object",
-        required: ["description", "image", "place", "role", "situation"],
+        required: ["description", "images", "place", "role", "situation"],
         properties: {
           description: { type: "string" },
-          image: { type: "string" },
+          images: {
+            type: "array",
+            items: {
+              type: "object",
+              required: ["fileName", "fileKey"],
+              properties: {
+                fileName: { type: "string" },
+                fileKey: { type: "string" }
+              }
+            }
+          },
           place: { type: "string" },
           role: { type: "string" },
           situation: { type: "string" },
@@ -74,15 +89,21 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         }
       };
 
-      const { description, image, place, role, situation, reportedTo } = checkParams<any>(
-        req.body,
-        schema,
-        res
-      );
+      const {
+        description,
+        images,
+        place,
+        role,
+        situation,
+        reportedTo
+      } = checkParams<any>(req.body, schema, res);
 
       const { insertedId: newCategoryId } = await IncidentsDb.insertOne({
         description,
-        image,
+        images: images.map(image => ({
+          ...image,
+          url: `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${image.fileKey}`
+        })),
         place,
         role,
         situation,
@@ -104,15 +125,11 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         required: ["incidentId", "newStatus"],
         properties: {
           incidentId: { type: "string" },
-          newStatus: { type: "string" },
+          newStatus: { type: "string" }
         }
       };
 
-      const { incidentId, newStatus } = checkParams<any>(
-        req.body,
-        schema,
-        res
-      );
+      const { incidentId, newStatus } = checkParams<any>(req.body, schema, res);
 
       const { modifiedCount } = await IncidentsDb.updateOne(
         { _id: new ObjectId(incidentId) },
@@ -128,6 +145,33 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .status(200)
         .json({ modifiedCount })
         .end();
+    } else if (requestedUrl === "/api/incidents/getImageUploadToken") {
+      console.log("request received");
+
+      const schema = {
+        type: "object",
+        required: ["fileName"],
+        properties: {
+          fileName: { type: "string" }
+        }
+      };
+      const { fileName } = checkParams<any>(req.body, schema, res);
+
+      const storage = new Storage({
+        projectId: process.env.PROJECT_ID,
+        credentials: {
+          client_email: process.env.CLIENT_EMAIL,
+          private_key: process.env.PRIVATE_KEY
+        }
+      });
+      const bucket = storage.bucket(process.env.BUCKET_NAME);
+      const file = bucket.file(`${uuidv4()}${fileName}`);
+      const options = {
+        expires: Date.now() + 5 * 60 * 1000, //  5 minutes,
+        fields: { "x-goog-meta-test": "data" }
+      };
+      const [response] = await file.generateSignedPostPolicyV4(options);
+      res.status(200).json(response);
     }
   } catch (e) {
     console.log(e);
