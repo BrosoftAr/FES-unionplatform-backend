@@ -1,17 +1,74 @@
 import { NowRequest, NowResponse } from "@now/node";
 import { ObjectId, ObjectID } from "mongodb";
-import { allowCors,  checkParams, onlyLoggedInAdmin } from "../imports/helpers";
+import {
+  allowCors,
+  checkParams,
+  onlyLoggedIn,
+  onlyLoggedInAdmin
+} from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 import { getHashForPassword } from "../imports/auth";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    await onlyLoggedInAdmin({ req, res });
     const requestedUrl = req.url;
 
     const db = await getDatabaseConnection();
     const Users = await db.collection("users");
 
+    const user = await onlyLoggedIn({ req, res });
+
+    // MY DETAILS
+    if (requestedUrl === "/api/users/myDetails") {
+      const myUser = await Users.findOne(
+        { _id: user._id },
+        { projection: { hash: 0 } }
+      );
+      res
+        .status(200)
+        .json({ myUser })
+        .end();
+    } else if (requestedUrl === "/api/users/updateProfile") {
+      const schema = {
+        type: "object",
+        required: ["phone", "city", "affiliateNumber"],
+        properties: {
+          phone: {
+            type: "string"
+          },
+          city: {
+            type: "string"
+          },
+          affiliateNumber: {
+            type: "string"
+          }
+        }
+      };
+
+      const { phone, city, affiliateNumber } = checkParams<any>(
+        req.body,
+        schema,
+        res
+      );
+
+      await Users.updateOne(
+        { _id: user._id },
+        {
+          $set: {
+            "workerProfile.phone": phone,
+            "workerProfile.city": city,
+            "workerProfile.affiliateNumber": affiliateNumber
+          }
+        }
+      );
+
+      res
+        .status(200)
+        .json({})
+        .end();
+    }
+
+    await onlyLoggedInAdmin({ req, res });
     // LIST
     if (requestedUrl === "/api/users/list") {
       const users = await Users.find({}).toArray();

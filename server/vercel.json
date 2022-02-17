@@ -23,7 +23,7 @@
       "methods": ["POST", "OPTIONS"]
     },
     {
-      "src": "/api/users/(add|detail|edit|list)",
+      "src": "/api/users/(add|detail|edit|list|myDetails|updateProfile)",
       "dest": "/api/users",
       "headers": {
         "Access-Control-Allow-Origin": "*",
