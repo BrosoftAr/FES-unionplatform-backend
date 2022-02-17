@@ -7,7 +7,7 @@ import {
   replaceAll,
   signWithToken
 } from "../../imports/helpers";
-import { checkPasswordHash } from "../../imports/auth";
+import { checkPasswordHash, getHashForPassword } from "../../imports/auth";
 import { User } from "../../types/User";
 import moment from "moment";
 import EmailService from "../../imports/EmailService";
@@ -176,6 +176,70 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
           $set: {
             isVerified: true,
             verificationToken: null
+          }
+        }
+      );
+
+      res
+        .status(200)
+        .json({ token })
+        .end();
+    }// RESET
+    else if (requestedUrl === "/api/auth/resetPassword") {
+      const schema = {
+        type: "object",
+        required: ["activationToken", "password"],
+        properties: {
+          activationToken: { type: "string" },
+          password: { type: "string" }
+        }
+      };
+
+      const { activationToken, password } = checkParams<{ activationToken: string, password: string }>(
+        req.body,
+        schema,
+        res
+      );
+
+      const user = await Users.findOne({
+        "verificationToken.token": activationToken
+      });
+
+      if (!user) {
+        res
+          .status(400)
+          .json({
+            message:
+              "El link de activación no es válido. Intente nuevamente utilizando la opción 'Olvidé mi contraseña'."
+          })
+          .end();
+        return;
+      }
+
+      if (moment(user.verificationToken.expiresAt).isBefore()) {
+        res
+          .status(400)
+          .json({
+            message:
+              "El link de activación expiró. Intente nuevamente utilizando la opción 'Olvidé mi contraseña'."
+          })
+          .end();
+        return;
+      }
+
+      const token = signWithToken({
+        userId: user._id,
+        email: user.email,
+        role: user.role
+      });
+
+      await Users.updateOne(
+        { _id: user._id },
+        {
+          $set: {
+            hash: await getHashForPassword(password),
+            verificationToken: null,
+            isVerified: true
           }
         }
       );

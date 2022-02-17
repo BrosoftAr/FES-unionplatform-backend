@@ -3,11 +3,15 @@ import { ObjectId, ObjectID } from "mongodb";
 import {
   allowCors,
   checkParams,
+  createVerificationToken,
+  getHtmlTemplate,
   onlyLoggedIn,
-  onlyLoggedInAdmin
+  onlyLoggedInAdmin,
+  replaceAll
 } from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 import { getHashForPassword } from "../imports/auth";
+import EmailService from "../imports/EmailService";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
@@ -15,6 +19,47 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
     const db = await getDatabaseConnection();
     const Users = await db.collection("users");
+
+    if (requestedUrl === "/api/users/forgotPassword") {
+      const schema = {
+        type: "object",
+        required: ["email"],
+        properties: {
+          email: { type: "string" }
+        }
+      };
+
+      const { email } = checkParams<any>(req.body, schema, res);
+
+      const verificationToken = createVerificationToken();
+
+      const user = await Users.findOne({ email });
+
+      if (user) {
+        Users.updateOne({ email }, { $set: { verificationToken } });
+
+        const activationLink = `${process.env.FRONTEND_CLIENT_URL}auth/reset/${verificationToken.token}`;
+
+        let html = getHtmlTemplate("reset-email-template");
+        html = replaceAll(
+          replaceAll(html, "{USERNAME}", `${user.workerProfile.name} ${user.workerProfile.lastName}`),
+          "{ACTIVATIONLINK}",
+          activationLink
+        );
+
+        await EmailService.sendEmail({
+          to: email,
+          subject: "Olvide mi contraseña de Union Platform",
+          text: "Olvide mi contraseña de Union Platform",
+          html
+        });
+      }
+
+      res
+        .status(200)
+        .json({})
+        .end();
+    }
 
     const user = await onlyLoggedIn({ req, res });
 
@@ -66,7 +111,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .status(200)
         .json({})
         .end();
-    }
+    } 
 
     await onlyLoggedInAdmin({ req, res });
     // LIST

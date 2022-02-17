@@ -3,7 +3,7 @@
   "version": 2,
   "routes": [
     {
-      "src": "/api/auth/(login|activation)",
+      "src": "/api/auth/(login|activation|resetPassword)",
       "dest": "/api/auth/login",
       "headers": {
         "Access-Control-Allow-Origin": "*",
@@ -23,7 +23,7 @@
       "methods": ["POST", "OPTIONS"]
     },
     {
-      "src": "/api/users/(add|detail|edit|list|myDetails|updateProfile)",
+      "src": "/api/users/(add|detail|edit|list|myDetails|updateProfile|forgotPassword)",
       "dest": "/api/users",
       "headers": {
         "Access-Control-Allow-Origin": "*",
