@@ -19,7 +19,7 @@ import { User } from "../../../shared/User";
 import { RolesEnum } from "../../../shared/roles";
 
 interface UsersFormValues {
-  username: string;
+  email: string;
   password: string;
   role: string;
 }
@@ -88,12 +88,12 @@ const AdminUsersDetail: React.FunctionComponent<RouteComponentProps<
 
   let initialValues: UsersFormValues | undefined = {
     role: RolesEnum.REPORTER,
-    username: "",
+    email: "",
     password: "",
   };
   if (user && isEditing) {
     initialValues = {
-      username: user.username,
+      email: user.email,
       password: "",
       role: user.role,
     };
@@ -119,8 +119,8 @@ const AdminUsersDetail: React.FunctionComponent<RouteComponentProps<
             </Form.Item>
 
             <Form.Item
-              label="Nombre de usuario"
-              name="username"
+              label="Email"
+              name="email"
               rules={[{ required: true }]}
             >
               <Input autoFocus />

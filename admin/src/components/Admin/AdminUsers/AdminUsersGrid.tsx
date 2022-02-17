@@ -55,14 +55,14 @@ const AdminUsersGrid = () => {
             render(userId) {
               return (
                 <>
-                  <Tooltip title="Eliminar">
+                  {/* <Tooltip title="Eliminar">
                     <Button
                       style={{ marginRight: 5 }}
                       type="primary"
                       size="small"
                       icon={<DeleteOutlined />}
                     />
-                  </Tooltip>
+                  </Tooltip> */}
                   <Tooltip title="Editar">
                     <Link to={URLS.ADMIN_USERS_EDIT.replace(":_id", userId)}>
                       <Button

@@ -162,8 +162,18 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
       const { insertedId: newUserId } = await Users.insertOne({
         email,
-        role,
         hash: await getHashForPassword(password),
+        role,
+        isActive: true,
+        workerProfile: {
+          name: "",
+          lastName: "",
+          phone: "",
+          city: "",
+          affiliateNumber: ""
+        },
+        isVerified: true,
+        verificationToken: null, 
         createdAt: new Date()
       });
 
