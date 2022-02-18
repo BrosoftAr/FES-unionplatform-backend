@@ -102,7 +102,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         description,
         images: images.map(image => ({
           ...image,
-          url: `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${image.fileKey}`
+          url: `https://storage.googleapis.com/${process.env.CLOUD_STORAGE_BUCKET_NAME}/${image.fileKey}`
         })),
         place,
         role,
@@ -158,13 +158,13 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
       const { fileName } = checkParams<any>(req.body, schema, res);
 
       const storage = new Storage({
-        projectId: process.env.PROJECT_ID,
+        projectId: process.env.CLOUD_STORAGE_PROJECT_ID,
         credentials: {
-          client_email: process.env.CLIENT_EMAIL,
-          private_key: process.env.PRIVATE_KEY
+          client_email: process.env.CLOUD_STORAGE_CLIENT_EMAIL,
+          private_key: process.env.CLOUD_STORAGE_PRIVATE_KEY
         }
       });
-      const bucket = storage.bucket(process.env.BUCKET_NAME);
+      const bucket = storage.bucket(process.env.CLOUD_STORAGE_BUCKET_NAME);
       const file = bucket.file(`${uuidv4()}${fileName}`);
       const options = {
         expires: Date.now() + 5 * 60 * 1000, //  5 minutes,

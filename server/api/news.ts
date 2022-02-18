@@ -89,7 +89,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         ...newNews,
         thumbnail: {
           ...newNews.thumbnail,
-          url: `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${newNews.thumbnail.fileKey}`
+          url: `https://storage.googleapis.com/${process.env.CLOUD_STORAGE_BUCKET_NAME}/${newNews.thumbnail.fileKey}`
         },
         createdAt: new Date()
       });
@@ -135,7 +135,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
             ...newsValues,
             thumbnail: {
               ...newsValues.thumbnail,
-              url: `https://storage.googleapis.com/${process.env.BUCKET_NAME}/${newsValues.thumbnail.fileKey}`
+              url: `https://storage.googleapis.com/${process.env.CLOUD_STORAGE_BUCKET_NAME}/${newsValues.thumbnail.fileKey}`
             },
             updatedAt: new Date()
           }
