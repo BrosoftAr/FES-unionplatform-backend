@@ -7,17 +7,20 @@ let cachedDb: Db;
 // A function for connecting to MongoDB,
 // taking a single parameter of the connection string
 const getDatabaseConnection = async (): Promise<Db> => {
-  const uri = process.env.MONGODB_URI;
-
   if (cachedDb) {
     return cachedDb;
   }
-
+  
+  const uri = process.env.MONGODB_URI;
+  // console.log('connectionUri', uri)
+  
   // If no connection is cached, create a new one
   const client = await MongoClient.connect(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   });
+
+  // console.log('here')
 
   // Select the database through the connection,
   // using the database path of the connection string
