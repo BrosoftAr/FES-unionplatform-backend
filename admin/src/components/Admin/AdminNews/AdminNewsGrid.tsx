@@ -14,15 +14,28 @@ import ApiEndpoints from "../../../shared/ApiEndpoints";
 const AdminNewsGrid = () => {
   const { news, isLoadingNews, fetchNews } = useNews({});
 
+  const testNotification = async () =>
+    await FetchService.request(ApiEndpoints.NEWS_TEST_NOTIFICATION);
+
   return (
     <Card
       title="Noticias"
       extra={
-        <Link to={URLS.ADMIN_NEWS_NEW}>
-          <Button icon={<PlusCircleOutlined />} type="primary">
-            Agregar Noticia
+        <>
+          <Button
+            icon={<PlusCircleOutlined />}
+            type="primary"
+            onClick={testNotification}
+            style={{ marginRight: "10px" }}
+          >
+            Simular notificación
           </Button>
-        </Link>
+          <Link to={URLS.ADMIN_NEWS_NEW}>
+            <Button icon={<PlusCircleOutlined />} type="primary">
+              Agregar Noticia
+            </Button>
+          </Link>
+        </>
       }
     >
       <Table

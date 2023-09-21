@@ -12,7 +12,7 @@ import ApiEndpoints from "../../../shared/ApiEndpoints";
 import useUsefulInfo from "../../../shared/hooks/useUsefulInfo";
 
 const AdminUsefulInfoGrid = () => {
-  const { usefulInfo, isLoadingUsefulInfo, fetchUsefulInfo } = useUsefulInfo();
+  const { usefulInfo, isLoadingUsefulInfo, fetchUsefulInfo } = useUsefulInfo({});
 
   return (
     <Card
@@ -63,9 +63,12 @@ const AdminUsefulInfoGrid = () => {
                             "Eliminando Información Útil...",
                             0
                           );
-                          await FetchService.request(ApiEndpoints.USEFUL_INFO_REMOVE, {
-                            body: JSON.stringify({ usefulInfoId }),
-                          });
+                          await FetchService.request(
+                            ApiEndpoints.USEFUL_INFO_REMOVE,
+                            {
+                              body: JSON.stringify({ usefulInfoId }),
+                            }
+                          );
                           closeLoading();
                           message.success("Información Útil eliminada");
                           fetchUsefulInfo();
@@ -74,7 +77,12 @@ const AdminUsefulInfoGrid = () => {
                     />
                   </Tooltip>
                   <Tooltip title="Editar">
-                    <Link to={URLS.ADMIN_USEFUL_INFO_EDIT.replace(":_id", usefulInfoId)}>
+                    <Link
+                      to={URLS.ADMIN_USEFUL_INFO_EDIT.replace(
+                        ":_id",
+                        usefulInfoId
+                      )}
+                    >
                       <Button
                         type="default"
                         size="small"

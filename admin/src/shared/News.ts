@@ -5,6 +5,7 @@ export type News = {
   title: string;
   description: string;
   content: string;
+  scope: string;
   thumbnail: {
     fileName: string;
     fileKey: string;    

@@ -6,7 +6,6 @@ import {
   createVerificationToken,
   getHtmlTemplate,
   replaceAll,
-  signWithToken
 } from "../../imports/helpers";
 import { getHashForPassword } from "../../imports/auth";
 import { User } from "../../types/User";
@@ -24,7 +23,7 @@ interface MethodParams {
 
 const schema = {
   type: "object",
-  required: ["email", "password", "city", "name", "lastName", "phone"],
+  required: ["email", "password"],
   properties: {
     affiliateNumber: { type: "string" },
     city: { type: "string" },
@@ -47,8 +46,6 @@ module.exports = allowCors(async (req: VercelRequest, res: VercelResponse) => {
       city,
       affiliateNumber
     } = checkParams<MethodParams>(req.body, schema, res);
-
-    console.log("here");
 
     const db = await getDatabaseConnection();
     const Users = await db.collection("users");
@@ -82,7 +79,6 @@ module.exports = allowCors(async (req: VercelRequest, res: VercelResponse) => {
     };
 
     const { insertedId: newUserId } = await Users.insertOne(newUser);
-
     const activationLink = `${process.env.FRONTEND_CLIENT_URL}auth/verify/${newUser.verificationToken.token}`;
 
     let html = getHtmlTemplate("signup-email-template");

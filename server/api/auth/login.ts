@@ -1,5 +1,6 @@
 import getDatabaseConnection from "../../imports/dbConnection";
 import { NowRequest, NowResponse } from "@now/node";
+
 import {
   allowCors,
   checkParams,
@@ -20,8 +21,7 @@ interface MethodParams {
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
-    const requestedUrl = req.url;
-
+    const requestedUrl =/*  */ req.url;
     // Get a database connection, cached or otherwise,
     // using the connection string environment variable as the argument
     const db = await getDatabaseConnection();
@@ -46,6 +46,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
       );
 
       const user = await Users.findOne({ email });
+      console.log(Users);
       if (!user) {
         res
           .status(400)

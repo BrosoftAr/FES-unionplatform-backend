@@ -1,6 +1,6 @@
 import { NowRequest, NowResponse } from "@now/node";
 import { ObjectId } from "mongodb";
-import { allowCors, onlyLoggedIn, checkParams, onlyLoggedInAdmin } from "../imports/helpers";
+import { allowCors, checkParams, onlyLoggedInAdmin } from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
@@ -19,9 +19,13 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
           limit: { type: "number" }
         }
       };
+      
       const { limit } = checkParams<any>(req.body, schema, res);
 
-      const usefulInfo = await UsefulInfoDb.find({}).limit(limit).sort("createdAt", -1).toArray();
+      const usefulInfo = await UsefulInfoDb.find({})
+        .limit(limit)
+        .sort("createdAt", -1)
+        .toArray();
 
       res.status(200).json({ usefulInfo });
       return;
@@ -68,7 +72,11 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         }
       };
 
-      const { usefulInfoValues: newUsefulInfo } = checkParams<any>(req.body, schema, res);
+      const { usefulInfoValues: newUsefulInfo } = checkParams<any>(
+        req.body,
+        schema,
+        res
+      );
 
       const { insertedId: newUsefulInfoId } = await UsefulInfoDb.insertOne({
         ...newUsefulInfo,
@@ -99,7 +107,11 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         }
       };
 
-      const { usefulInfoId, usefulInfoValues } = checkParams<any>(req.body, schema, res);
+      const { usefulInfoId, usefulInfoValues } = checkParams<any>(
+        req.body,
+        schema,
+        res
+      );
 
       const { modifiedCount } = await UsefulInfoDb.updateOne(
         { _id: new ObjectId(usefulInfoId) },

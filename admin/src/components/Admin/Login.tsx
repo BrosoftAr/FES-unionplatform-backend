@@ -25,14 +25,14 @@ const Login = () => {
   const onFinish = async (values: any) => {
     try {
       setIsSubmitting(true);
-      const { password, email } = values as FormValues;
+      const { password, email }: FormValues = values;
       const { token } = await FetchService.request(ApiEndpoints.LOGIN, {
         body: JSON.stringify({ email, password, admin: true }),
       });
       AuthService.saveAuthToken(token);
       message.success("Login exitoso");
       history.push(URLS.ADMIN);
-    } catch (e) {
+    } catch (e: String | any) {
       message.error(e.message);
     } finally {
       setIsSubmitting(false);

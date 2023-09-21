@@ -4,7 +4,7 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 
 const BackButton: React.FunctionComponent<RouteComponentProps> = ({
-  history
+  history,
 }) => {
   return (
     <Button
@@ -14,7 +14,7 @@ const BackButton: React.FunctionComponent<RouteComponentProps> = ({
         history.goBack();
       }}
       icon={<ArrowLeftOutlined />}
-    ></Button>
+    />
   );
 };
 export default withRouter(BackButton);
