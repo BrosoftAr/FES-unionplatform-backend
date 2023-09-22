@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Card, Form, Input, Row, Col, Button, message, Spin } from "antd";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import BackCardTitle from "../../BackCardTitle";
 import FetchService from "../../../shared/fetchService";
 import ApiEndpoints from "../../../shared/ApiEndpoints";
-import { RouteComponentProps, withRouter } from "react-router-dom";
 import URLS from "../../../shared/urls";
 import { UsefulInfo } from "../../../shared/UsefulInfo";
 import HtmlEditor from "../../HtmlEditor";
@@ -79,7 +79,7 @@ const AdminUsefulInfoDetail: React.FunctionComponent<RouteComponentProps<
     return <Spin />;
   }
 
-  let initialValues: UsefulInfoFormValues | undefined = undefined;
+  let initialValues: UsefulInfoFormValues | undefined;
   if (usefulInfo && isEditing) {
     initialValues = {
       title: usefulInfo.title,

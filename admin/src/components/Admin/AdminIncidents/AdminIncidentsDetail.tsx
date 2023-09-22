@@ -10,10 +10,10 @@ import {
   Spin,
   Select,
 } from "antd";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import BackCardTitle from "../../BackCardTitle";
 import FetchService from "../../../shared/fetchService";
 import ApiEndpoints from "../../../shared/ApiEndpoints";
-import { RouteComponentProps, withRouter } from "react-router-dom";
 import {
   Incident,
   IncidentStatusEnum,

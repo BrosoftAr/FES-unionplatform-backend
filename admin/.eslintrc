@@ -53,7 +53,16 @@
     "react/state-in-constructor": 0,
     "react/jsx-props-no-spreading": 0,
     "react/jsx-curly-newline": 0,
-    "react/jsx-indent": 0
+    "react/jsx-indent": 0,
+    "no-shadow": 0,
+    "no-unused-vars": 1,
+    "camelcase": 1,
+    "no-use-before-define": 1,
+    "import/order": 1,
+    "react/jsx-key": 1,
+    "no-return-await": 1,
+    "react/require-default-props": 1,
+    "prefer-promise-reject-errors": 1
   },
   "settings": {
     "import/resolver": "meteor"

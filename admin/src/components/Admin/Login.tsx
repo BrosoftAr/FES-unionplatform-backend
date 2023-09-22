@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Input, Form, Button, message } from "antd";
+import { useHistory } from "react-router-dom";
 import FetchService from "../../shared/fetchService";
 import ApiEndpoints from "../../shared/ApiEndpoints";
 import AuthService from "../../shared/AuthService";
-import { useHistory } from "react-router-dom";
 import URLS from "../../shared/urls";
 
 interface FormValues {
