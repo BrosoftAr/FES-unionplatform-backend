@@ -22,14 +22,14 @@ const AdminNewsGrid = () => {
       title="Noticias"
       extra={
         <>
-          <Button
+          {/* <Button
             icon={<PlusCircleOutlined />}
             type="primary"
             onClick={testNotification}
             style={{ marginRight: "10px" }}
           >
             Simular notificación
-          </Button>
+          </Button> */}
           <Link to={URLS.ADMIN_NEWS_NEW}>
             <Button icon={<PlusCircleOutlined />} type="primary">
               Agregar Noticia

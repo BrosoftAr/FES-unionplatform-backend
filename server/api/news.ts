@@ -178,6 +178,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .end();
     } else if (requestedUrl === "/api/news/notification") {
       await sendPushToTopic({
+        testNotification: true,
         topic: "new-added",
         notification: {
           title: "Nueva noticia publicada",

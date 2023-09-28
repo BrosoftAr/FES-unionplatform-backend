@@ -20,7 +20,8 @@ const sendPushToOneUser = async payload => {
 };
 
 const sendPushToTopic = async payload => {
-  const environment = process.env.ENVIRONMENT_TYPE;
+  const testNotification = !!payload?.testNotification;
+  const environment = testNotification ? 'development' : process.env.ENVIRONMENT_TYPE;
   const appName = process.env.APP_NAME;
   const message = {
     topic: `${environment === "production" ? "" : `development-`}${appName}-${payload.topic}`,
