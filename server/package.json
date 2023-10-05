@@ -1,5 +1,5 @@
 {
-  "name": "union-platform-server",
+  "name": "ojo-paritario-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,21 +12,22 @@
     "@google-cloud/storage": "^5.18.1",
     "@now/node": "^1.5.0",
     "@sendgrid/mail": "^7.6.0",
-    "@types/mongodb": "^3.5.4",
+    "@types/mongodb": "^4.0.7",
     "@types/node": "^13.11.0",
     "ajv": "^6.12.0",
     "bcrypt": "^4.0.1",
     "csv": "^5.3.2",
+    "firebase-admin": "^11.10.1",
     "jsonwebtoken": "^8.5.1",
     "micro": "^9.3.4",
     "moment": "^2.27.0",
-    "mongodb": "^3.5.5",
     "node-fetch": "^2.6.0",
     "randomstring": "^1.2.1",
     "uuid": "^8.3.2",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
+    "@google-cloud/storage": "^5.18.1",
     "babel-eslint": "^10.0.3",
     "babel-plugin-istanbul": "^5.2.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -40,6 +41,10 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-meteor": "^6.0.0",
     "eslint-plugin-react": "^7.18.3",
+    "mongodb": "^6.0.0",
     "prettier": "^1.19.1"
+  },
+  "engines": {
+    "node": "v18.16.1"
   }
 }

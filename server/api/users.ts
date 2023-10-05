@@ -1,5 +1,5 @@
 import { NowRequest, NowResponse } from "@now/node";
-import { ObjectId, ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import {
   allowCors,
   checkParams,
@@ -42,7 +42,11 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
 
         let html = getHtmlTemplate("reset-email-template");
         html = replaceAll(
-          replaceAll(html, "{USERNAME}", `${user.workerProfile.name} ${user.workerProfile.lastName}`),
+          replaceAll(
+            html,
+            "{USERNAME}",
+            `${user.workerProfile.name} ${user.workerProfile.lastName}`
+          ),
           "{ACTIVATIONLINK}",
           activationLink
         );
@@ -111,7 +115,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .status(200)
         .json({})
         .end();
-    } 
+    }
 
     await onlyLoggedInAdmin({ req, res });
     // LIST
@@ -173,7 +177,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
           affiliateNumber: ""
         },
         isVerified: true,
-        verificationToken: null, 
+        verificationToken: null,
         createdAt: new Date()
       });
 
@@ -205,7 +209,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
       const { email, password, role } = userValues;
 
       const { modifiedCount } = await Users.updateOne(
-        { _id: new ObjectID(userId) },
+        { _id: new ObjectId(userId) },
         {
           $set: {
             email,

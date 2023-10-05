@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Input, Form, Button, message } from "antd";
+import { useHistory } from "react-router-dom";
 import FetchService from "../../shared/fetchService";
 import ApiEndpoints from "../../shared/ApiEndpoints";
 import AuthService from "../../shared/AuthService";
-import { useHistory } from "react-router-dom";
 import URLS from "../../shared/urls";
 
 interface FormValues {
@@ -25,14 +25,14 @@ const Login = () => {
   const onFinish = async (values: any) => {
     try {
       setIsSubmitting(true);
-      const { password, email } = values as FormValues;
+      const { password, email }: FormValues = values;
       const { token } = await FetchService.request(ApiEndpoints.LOGIN, {
         body: JSON.stringify({ email, password, admin: true }),
       });
       AuthService.saveAuthToken(token);
       message.success("Login exitoso");
       history.push(URLS.ADMIN);
-    } catch (e) {
+    } catch (e: String | any) {
       message.error(e.message);
     } finally {
       setIsSubmitting(false);

@@ -33,7 +33,7 @@
       "methods": ["POST", "OPTIONS"]
     },
     {
-      "src": "/api/news/(add|detail|edit|list|remove)",
+      "src": "/api/news/(add|detail|edit|list|remove|notification)",
       "dest": "/api/news",
       "headers": {
         "Access-Control-Allow-Origin": "*",

@@ -1,5 +1,5 @@
-import { API_URL } from "./config";
 import { message } from "antd";
+import { API_URL } from "./config";
 
 class FetchService {
   static async request(
@@ -7,29 +7,30 @@ class FetchService {
     params: RequestInit = {}
   ): Promise<any> {
     const token = localStorage.getItem("token");
+    console.log(`${API_URL}${endpoint}`)
     return new Promise((resolve, reject) => {
       fetch(`${API_URL}${endpoint}`, {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
-          authorization: token || ""
+          authorization: token || "",
         },
         method: "POST",
-        ...params
+        ...params,
       })
-        .then(res => {
+        .then((res) => {
           if (res.status === 200 && res.ok) {
-            res.json().then(json => {
+            res.json().then((json) => {
               resolve(json);
             });
           } else if (res.status === 401) {
             message.error("Necesitas loguearte para realizar esta acción");
             localStorage.removeItem("token");
 
-            res.json().then(json => {
+            res.json().then((json) => {
               reject(json);
             });
           } else {
-            res.json().then(json => {
+            res.json().then((json) => {
               reject(json);
             });
           }

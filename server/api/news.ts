@@ -2,16 +2,16 @@ import { NowRequest, NowResponse } from "@now/node";
 import { ObjectId } from "mongodb";
 import {
   allowCors,
-  onlyLoggedIn,
   checkParams,
   onlyLoggedInAdmin
 } from "../imports/helpers";
 import getDatabaseConnection from "../imports/dbConnection";
+import { sendPushToTopic } from "../imports/pushNotifications";
+import { APP_NAME } from "../imports/constants";
 
 module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
   try {
     const requestedUrl = req.url;
-
     const db = await getDatabaseConnection();
     const NewsDb = await db.collection("news");
 
@@ -34,7 +34,7 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
       return;
     }
     // DETAIL
-    else if (requestedUrl === "/api/news/detail") {
+    if (requestedUrl === "/api/news/detail") {
       const schema = {
         type: "object",
         required: ["newsId"],
@@ -65,10 +65,11 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         properties: {
           newsValues: {
             type: "object",
-            required: ["title", "description", "thumbnail", "content"],
+            required: ["title", "description", "thumbnail", "content", "scope"],
             properties: {
               title: { type: "string" },
               description: { type: "string" },
+              scope: { type: "string" },
               thumbnail: {
                 type: "object",
                 required: ["fileName", "fileKey"],
@@ -92,6 +93,14 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
           url: `https://storage.googleapis.com/${process.env.CLOUD_STORAGE_BUCKET_NAME}/${newNews.thumbnail.fileKey}`
         },
         createdAt: new Date()
+      });
+
+      await sendPushToTopic({
+        topic: "new-added",
+        notification: {
+          title: "Nueva noticia publicada",
+          body: newNews.title || ""
+        }
       });
 
       res
@@ -167,8 +176,24 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .status(200)
         .json({ news })
         .end();
+    } else if (requestedUrl === "/api/news/notification") {
+      await sendPushToTopic({
+        testNotification: true,
+        topic: "new-added",
+        notification: {
+          title: "Nueva noticia publicada",
+          body: "Titulo de nueva noticia"
+        }
+      });
+
+      res
+        .status(200)
+        .json({})
+        .end();
     }
   } catch (e) {
     console.log(e);
   }
 });
+
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Form,
@@ -10,19 +10,20 @@ import {
   Spin,
   Upload,
 } from "antd";
+import { RouteComponentProps, withRouter } from "react-router-dom";
+import { UploadOutlined } from "@ant-design/icons";
 import BackCardTitle from "../../BackCardTitle";
 import FetchService from "../../../shared/fetchService";
 import ApiEndpoints from "../../../shared/ApiEndpoints";
-import { RouteComponentProps, withRouter } from "react-router-dom";
 import URLS from "../../../shared/urls";
 import { News } from "../../../shared/News";
 import HtmlEditor from "../../HtmlEditor";
-import { UploadOutlined } from "@ant-design/icons";
 
 interface NewsFormValues {
   title: string;
   description: string;
   content: string;
+  scope: string;
 }
 
 interface AdminNewsDetailRouteParams {
@@ -112,16 +113,17 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
     return <Spin />;
   }
 
-  let initialValues: NewsFormValues | undefined = undefined;
+  let initialValues: NewsFormValues | undefined;
   if (news && isEditing) {
     initialValues = {
       title: news.title,
       content: news.content,
       description: news.description,
+      scope: news.scope,
     };
   }
 
-  const imageUrl = news?.thumbnail;
+  // const imageUrl = news?.thumbnail;
 
   const getImageToken = async (fileName: string) => {
     const response = await FetchService.request(
@@ -154,7 +156,7 @@ const AdminNewsDetail: React.FunctionComponent<RouteComponentProps<
     Object.entries({ ...fields, file }).forEach(([key, value]) => {
       formData.append(key, value as any);
     });
-
+    
     const upload = await fetch(url, {
       method: "POST",
       body: formData,
