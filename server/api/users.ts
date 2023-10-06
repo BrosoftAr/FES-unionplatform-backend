@@ -116,7 +116,17 @@ module.exports = allowCors(async (req: NowRequest, res: NowResponse) => {
         .json({})
         .end();
     }
-
+    // DELETE
+    else if (requestedUrl === "/api/users/remove") {
+      const deletedCount = await Users.deleteOne({
+        _id: new ObjectId(user._id)
+      });
+      res
+        .status(200)
+        .json({ deletedCount })
+        .end();
+    }
+    
     await onlyLoggedInAdmin({ req, res });
     // LIST
     if (requestedUrl === "/api/users/list") {

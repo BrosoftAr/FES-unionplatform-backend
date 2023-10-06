@@ -33,9 +33,7 @@ export const allowCors = fn => async (req, res) => {
 
 export function checkParams<T>(obj: T, schema, res: NowResponse) {
   const validate = ajv.compile(schema);
-  console.log()
   const valid = validate(obj);
-  console.log(JSON.stringify(obj))
   if (!valid) {
     res.status(400).end();
     console.log("errors", validate.errors);
@@ -93,7 +91,6 @@ export const onlyLoggedInAdmin = async ({ req, res }) => {
     if (!user) {
       throw new Error("User does not exist");
     }
-
     return user;
   } catch {
     res.status(401).end();

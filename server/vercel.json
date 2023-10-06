@@ -23,14 +23,14 @@
       "methods": ["POST", "OPTIONS"]
     },
     {
-      "src": "/api/users/(add|detail|edit|list|myDetails|updateProfile|forgotPassword)",
+      "src": "/api/users/(add|detail|edit|list|myDetails|updateProfile|forgotPassword|remove)",
       "dest": "/api/users",
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Authorization, Accept, Content-Type"
       },
-      "methods": ["POST", "OPTIONS"]
+      "methods": ["POST", "OPTIONS", "DELETE"]
     },
     {
       "src": "/api/news/(add|detail|edit|list|remove|notification)",
